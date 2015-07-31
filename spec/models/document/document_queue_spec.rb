@@ -1,5 +1,21 @@
 require 'rails_helper'
 
 RSpec.describe Document::Queue, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  context "validations" do
+    subject { create(:document_queue) }
+
+    it { is_expected.to be_valid }
+
+    %w(name max_size rate_limit_id).each do |attr|
+      it "requires #{attr}" do
+        subject.send("#{attr}=", nil)
+        expect(subject).not_to be_valid
+      end
+    end
+
+    it "requires max_size to be greater than zero" do
+      subject.max_size = 0
+      expect(subject).not_to be_valid
+    end
+  end
 end
