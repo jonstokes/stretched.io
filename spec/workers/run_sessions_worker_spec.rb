@@ -9,7 +9,7 @@ describe RunSessionsWorker do
 
   let(:worker)         { RunSessionsWorker.new }
   let(:domain)         { "www.retailer.com" }
-  let(:page_source)    { File.open(Rails.root.join("spec","fixtures","html","product_page.html")) { |f| f.read } }
+  let(:web_page)       { create(:sunbro_page,    domain: domain) }
   let(:session_queue)  { create(:session_queue,  name: domain) }
   let(:document_queue) { create(:document_queue, name: domain) }
   let(:sessions)       { YAML.load_file(Rails.root.join('spec','fixtures','sessions.yml')) }
@@ -19,9 +19,9 @@ describe RunSessionsWorker do
 
     stub_request(:get, domain).
       to_return(
-        body:    page_source,
-        status:  200,
-        headers: { 'Content-Length' => 100 }
+        body:    web_page.body,
+        status:  web_page.code,
+        headers: web_page.headers
       )
   end
 
