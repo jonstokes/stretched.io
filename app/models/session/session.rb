@@ -7,6 +7,5 @@ module Session
     validates :page_format,       presence: true, inclusion: { in: %w(html xml dhtml) }
     validates :document_adapters, presence: true
     validates :urls,              presence: true
-
   end
 end

@@ -47,6 +47,14 @@ module Session
       self.size.zero?
     end
 
+    def with
+      read!
+      yield self
+    ensure
+      stop_reading!
+    end
+
+
     def read!
       readers.increment
     end
