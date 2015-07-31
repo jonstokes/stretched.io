@@ -54,7 +54,6 @@ module Session
       stop_reading!
     end
 
-
     def read!
       readers.increment
     end
