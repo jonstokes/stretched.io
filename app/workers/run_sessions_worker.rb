@@ -56,16 +56,15 @@ class RunSessionsWorker < Bellbro::Worker
   # Hook support
   def transition
     return unless should_run?
-    next_jid = self.class.perform_async(user: user, queue: session_q.name)
+    next_jid = self.class.perform_async(queue: session_q.name)
     record_set(:transition, "RunSessionsWorker")
     record_set(:next_jid, next_jid)
   end
 
   def should_run?
     abort! unless debug? ||
-        user &&
         session_q.try(:any?) &&
-        jobs_in_flight_with_this_queue(user: @user, queue: session_q.name) < session_q.concurrency
+        jobs_in_flight_with_this_queue(queue: session_q.name) < session_q.concurrency
   end
 
   def set_domain
@@ -73,7 +72,7 @@ class RunSessionsWorker < Bellbro::Worker
   end
 
   def register_extensions
-    # Buzzsaw::Extension.register_all(user)
+    # Buzzsaw::Extension.register_all
   end
 
   # Misc
