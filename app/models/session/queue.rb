@@ -8,5 +8,21 @@ module Session
     validates :name,          presence: true
     validates :max_size,      presence: true, numericality: { greater_than: 0 }
     validates :rate_limit_id, presence: true
+
+    def pop
+      # atomic pop from queue
+    end
+
+    def with_limit
+      rate_limiter.with_limit(limiter_key) do
+        yield
+      end
+    end
+
+    private
+
+    def limiter_key
+      "#{self.class.name}::#{name}"
+    end
   end
 end

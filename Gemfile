@@ -9,6 +9,7 @@ gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
+gem 'ratelimit', '~> 1.0.1'
 
 group :development do
   gem 'pry-rails'
@@ -24,8 +25,6 @@ group :development, :test do
 end
 
 group :test do
-  gem "capybara", "~> 2.1"
   gem "database_cleaner", "~> 1.0"
-  gem "domino", "~> 0.5.0"
+  gem "timecop", "~> 0.7.1"
 end
-
