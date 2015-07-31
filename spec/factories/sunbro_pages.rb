@@ -2,6 +2,7 @@ FactoryGirl.define do
   factory :sunbro_page, class: Sunbro::Page do
     skip_create
 
+    transient { domain { "www.retailer.com" } }
     sequence(:url)  { |n| "http://#{domain}/#{n}" }
     sequence(:body) { |n|
       <<-EOS

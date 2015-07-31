@@ -5,24 +5,37 @@ require 'sidekiq/testing'
 WebMock.disable_net_connect!(allow_localhost: true)
 
 describe RunSessionsWorker do
-  let(:document_adapter) { create(:document_adapter) }
+  let(:worker)           { RunSessionsWorker.new }
+  let(:domain)           { "www.retailer.com" }
+  let(:session_queue)    { create(:session_queue,    domain: domain) }
+  let(:document_queue)   { create(:document_queue,   domain: domain) }
+  let(:document_adapter) { create(:document_adapter, domain: domain, document_queue: document_queue) }
+  let(:web_pages)        { 5.times.map { |n| create(:sunbro_page) } }
 
-  let(:worker)         { RunSessionsWorker.new }
-  let(:domain)         { "www.retailer.com" }
-  let(:web_page)       { create(:sunbro_page,    domain: domain) }
-  let(:session_queue)  { create(:session_queue,  name: domain) }
-  let(:document_queue) { create(:document_queue, name: domain) }
-  let(:sessions)       { YAML.load_file(Rails.root.join('spec','fixtures','sessions.yml')) }
+  let(:sessions)       {
+    5.times.map do |n|
+      build(
+        :session,
+        session_queue:     session_queue,
+        document_adapters: [ document_adapter.name ],
+        urls:              [ url: web_pages[n].url.to_s ]
+      )
+    end
+  }
 
   before :each do
-    session_queue.add(sessions)
+    web_pages.each do |page|
+      stub_request(:get, page.url.to_s).
+        to_return {
+          {
+            body:    page.body,
+            status:  page.code,
+            headers: page.headers
+          }
+        }
+    end
 
-    stub_request(:get, domain).
-      to_return(
-        body:    web_page.body,
-        status:  web_page.code,
-        headers: web_page.headers
-      )
+    session_queue.add(sessions)
   end
 
   describe "#perform" do
