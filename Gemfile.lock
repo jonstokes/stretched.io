@@ -1,3 +1,14 @@
+GIT
+  remote: http://github.com/jonstokes/bellbro.git
+  revision: 27d13090df50a89ba7566c4ec6f45377e864bd64
+  specs:
+    bellbro (0.3.0)
+      activesupport
+      airbrake
+      redis
+      retryable
+      sidekiq
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -41,12 +52,6 @@ GEM
       builder
       multi_json
     arel (6.0.2)
-    bellbro (0.3.0)
-      activesupport
-      airbrake
-      redis
-      retryable
-      sidekiq
     better_errors (2.1.1)
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
@@ -246,7 +251,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bellbro (~> 0.3.0)
+  bellbro!
   better_errors
   binding_of_caller
   byebug

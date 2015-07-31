@@ -1,3 +1,5 @@
+require 'sidekiq/api'
+
 module SidekiqUtils
   def jobs_in_flight_with_session_queue(opts)
     jobs_with_session_queue(opts) + workers_with_session_queue(opts)

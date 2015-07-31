@@ -1,11 +1,8 @@
 class RunSessionsWorker < Bellbro::Worker
 
   # Sidekiq
-  include SidekiqUtils
+  extend SidekiqUtils
   sidekiq_options queue: :stretched, retry: true
-
-  # Delegations
-  delegate :timed_out?, to: :timer
 
   # Logging
   track_with_schema(
@@ -40,6 +37,8 @@ class RunSessionsWorker < Bellbro::Worker
 
   after :transition, :stop_tracking
 
+  time_out_in 1.hour
+
   # Main
   def call
     record_update
@@ -57,7 +56,7 @@ class RunSessionsWorker < Bellbro::Worker
   def transition
     return unless should_run?
     next_jid = self.class.perform_async(queue: session_q.name)
-    record_set(:transition, "RunSessionsWorker")
+    record_set(:transition, self.class.name)
     record_set(:next_jid, next_jid)
   end
 
@@ -96,10 +95,6 @@ class RunSessionsWorker < Bellbro::Worker
   end
 
   def session_q
-    @session_q ||= Session::Queue.find(context[:queue])
-  end
-
-  def timer
-    @timer ||= RateLimiter.new(context[:timeout] || 1.hour.to_i)
+    @session_q ||= Session::Queue.find_by(name: context[:queue])
   end
 end
