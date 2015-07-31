@@ -13,6 +13,7 @@ gem 'ratelimit', '~> 1.0.1'
 gem 'sidekiq', '~> 3.4.2'
 gem 'redis-objects', '~> 1.2'
 gem 'sunbro', '~> 0.1.2'
+gem 'bellbro', '~> 0.3.0'
 
 group :development do
   gem 'pry-rails'

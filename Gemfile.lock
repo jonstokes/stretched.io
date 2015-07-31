@@ -37,7 +37,16 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.3.8)
+    airbrake (4.3.0)
+      builder
+      multi_json
     arel (6.0.2)
+    bellbro (0.3.0)
+      activesupport
+      airbrake
+      redis
+      retryable
+      sidekiq
     better_errors (2.1.1)
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
@@ -237,6 +246,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bellbro (~> 0.3.0)
   better_errors
   binding_of_caller
   byebug
