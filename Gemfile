@@ -19,13 +19,14 @@ group :development do
 end
 
 group :development, :test do
-  gem "byebug"
-  gem "factory_girl_rails", "~> 4.2"
-  gem "pry"
-  gem "rspec-rails"
+  gem 'byebug'
+  gem 'factory_girl_rails', '~> 4.2'
+  gem 'pry'
+  gem 'rspec-rails'
 end
 
 group :test do
-  gem "database_cleaner", "~> 1.0"
-  gem "timecop", "~> 0.7.1"
+  gem 'database_cleaner', '~> 1.0'
+  gem 'timecop', '~> 0.7.1'
+  gem 'webmock', '~> 1.21'
 end
