@@ -21,12 +21,18 @@ RSpec.describe Session::Queue, type: :model do
 
   context "pusing and popping" do
     let(:session_queue) { create(:session_queue) }
-    
+
     describe "#push" do
       it "adds a session object to the session queue" do
         session = build(:session)
         session_queue.push(session)
         expect(session_queue.size).to eq(1)
+      end
+
+      it "adds an array of sessions" do
+        sessions = 5.times.map { build(:session) }
+        session_queue.push(sessions)
+        expect(session_queue.size).to eq(5)        
       end
     end
 
