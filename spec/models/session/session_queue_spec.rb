@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Session::Queue, type: :model do
+  let(:session_queue) { create(:session_queue) }
+
   context "validations" do
     subject { create(:session_queue) }
 
@@ -19,9 +21,32 @@ RSpec.describe Session::Queue, type: :model do
     end
   end
 
-  context "pusing and popping" do
-    let(:session_queue) { create(:session_queue) }
+  context "associations" do
+    describe "sessions" do
+      it "is a relation of sessions in this queue" do
+        sessions = 5.times.map { create(:session, session_queue: session_queue) }
+        sessions.each do |session|
+          expect(session_queue.sessions).to include(session)
+        end
+      end
+    end
+  end
 
+  context "reader tracking" do
+    describe "#readers" do
+      it "counts the number of readers" do
+        session_queue.read!
+        session_queue.read!
+
+        expect(session_queue.readers).to eq(2)
+
+        session_queue.stop_reading!
+        expect(session_queue.readers).to eq(1)
+      end
+    end
+  end
+
+  context "pusing and popping" do
     describe "#push" do
       it "adds a session object to the session queue" do
         session = build(:session)
@@ -32,7 +57,7 @@ RSpec.describe Session::Queue, type: :model do
       it "adds an array of sessions" do
         sessions = 5.times.map { build(:session) }
         session_queue.push(sessions)
-        expect(session_queue.size).to eq(5)        
+        expect(session_queue.size).to eq(5)
       end
     end
 

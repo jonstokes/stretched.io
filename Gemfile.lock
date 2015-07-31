@@ -153,6 +153,8 @@ GEM
     redis (3.2.1)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
+    redis-objects (1.2.0)
+      redis (>= 3.0.2)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
@@ -248,6 +250,7 @@ DEPENDENCIES
   pry-rails
   rails (= 4.2.1)
   ratelimit (~> 1.0.1)
+  redis-objects (~> 1.2)
   rspec-rails
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)

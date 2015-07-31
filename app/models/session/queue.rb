@@ -1,5 +1,7 @@
 module Session
   class Queue < ActiveRecord::Base
+    include Redis::Objects
+
     self.table_name = 'session_queues'
 
     belongs_to :rate_limit
@@ -8,6 +10,8 @@ module Session
     validates :name,          presence: true
     validates :max_size,      presence: true, numericality: { greater_than: 0 }
     validates :rate_limit_id, presence: true
+
+    counter :readers
 
     def push(arg)
       if arg.is_a?(Enumerable)
@@ -25,9 +29,34 @@ module Session
     def size
       sessions.count
     end
+    alias_method :count, :size
 
     def sessions
       db { Session.where(session_queue_id: id) }
+    end
+
+    def is_being_read?
+      any? || (readers > 0)
+    end
+
+    def any?
+      !empty?
+    end
+
+    def empty?
+      self.size.zero?
+    end
+
+    def read!
+      readers.increment
+    end
+
+    def stop_reading!
+      if readers > 0
+        readers.decrement
+      elsif readers < 0
+        readers.reset
+      end
     end
 
     def with_limit
