@@ -97,6 +97,7 @@ ActiveRecord::Schema.define(version: 20150730234440) do
     t.string   "name",          null: false
     t.uuid     "rate_limit_id", null: false
     t.integer  "max_size",      null: false
+    t.integer  "concurrency",   null: false
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end

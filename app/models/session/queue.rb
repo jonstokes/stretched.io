@@ -9,6 +9,7 @@ module Session
 
     validates :name,          presence: true
     validates :max_size,      presence: true, numericality: { greater_than: 0 }
+    validates :concurrency,   presence: true, numericality: { greater_than: 0 }
     validates :rate_limit_id, presence: true
 
     counter :readers

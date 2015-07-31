@@ -4,5 +4,6 @@ FactoryGirl.define do
     rate_limit
     name     { domain }
     max_size 100
+    concurrency 5
   end
 end

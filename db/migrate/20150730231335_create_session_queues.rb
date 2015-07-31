@@ -4,6 +4,7 @@ class CreateSessionQueues < ActiveRecord::Migration
       t.string  :name,          null: false
       t.uuid    :rate_limit_id, null: false
       t.integer :max_size,      null: false
+      t.integer :concurrency,   null: false
       t.timestamps              null: false
     end
   end
