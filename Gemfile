@@ -19,6 +19,8 @@ gem 'retryable'
 gem 'sunbro', '~> 0.1.2'
 #gem 'bellbro', '~> 0.3.0'
 gem 'bellbro', git: "http://github.com/jonstokes/bellbro.git"
+gem 'smelter'
+gem 'buzzsaw'
 
 group :development do
   gem 'pry-rails'
