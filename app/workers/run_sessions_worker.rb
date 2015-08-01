@@ -6,25 +6,25 @@ class RunSessionsWorker < Bellbro::Worker
 
   # Logging
   track_with_schema(
-    session_queue_size:  Integer,
-    timed_out:           String,
-    pages_scraped:       Integer,
-    ssn_def:             String,
-    ssn_user:            String,
-    ssn_pages_scraped:   Integer,
-    ssn_size:            Integer,
-    ssn_mean_response:   Integer,  #ms
-    ssn_median_response: Integer,  #ms
-    ssn_mean_eff_response: Integer, #ms
-    ssn_mean_parse:      Integer,  #ms
-    ssn_median_parse:    Integer,  #ms
-    ssn_mean_valid_parse: Integer,  #ms
+    session_queue_size:     Integer,
+    timed_out:              String,
+    pages_scraped:          Integer,
+    ssn_def:                String,
+    ssn_user:               String,
+    ssn_pages_scraped:      Integer,
+    ssn_size:               Integer,
+    ssn_mean_response:      Integer, #ms
+    ssn_median_response:    Integer, #ms
+    ssn_mean_eff_response:  Integer, #ms
+    ssn_mean_parse:         Integer, #ms
+    ssn_median_parse:       Integer, #ms
+    ssn_mean_valid_parse:   Integer, #ms
     ssn_median_valid_parse: Integer, #ms
-    ssn_duration:        Integer, #ms
-    ssn_rate:            Integer,  #ms per page
-    ssn_real_rate:       Integer,  #ms per page
-    transition:          String,
-    next_jid:            String
+    ssn_duration:           Integer, #ms
+    ssn_rate:               Integer, #ms per page
+    ssn_real_rate:          Integer, #ms per page
+    transition:             String,
+    next_jid:               String
   )
 
   # Hooks
