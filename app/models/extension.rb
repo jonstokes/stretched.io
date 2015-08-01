@@ -1,7 +1,8 @@
 class Extension < ActiveRecord::Base
   include CommonFinders
-
-  validates :name, presence: true
+  include Smelter::Extendable
+  
+  validates :name,   presence: true
   validates :source, presence: true
 
   def self.all_names

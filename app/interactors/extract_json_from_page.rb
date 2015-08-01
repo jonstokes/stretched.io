@@ -6,12 +6,12 @@ class ExtractJsonFromPage
 
   attr_accessor :instance
 
-  expects :adapter
-
-  def adapter; context.adapter; end
+  expects  :adapter, :page
+  permits  :browser_session
+  provides :documents
 
   def call
-    context.json_objects = context.page.doc.xpath(adapter.xpath).map do |node|
+    context.documents = context.page.doc.xpath(adapter.xpath).map do |node|
       instance = {}
       instance = run_json_setters(instance, node)
       instance = run_ruby_setters(instance, node)
@@ -30,12 +30,11 @@ class ExtractJsonFromPage
   #
 
   def run_json_setters(instance, node)
-    runner = Stretched::Script.runner(user: user)
+    runner = Script.runner
     runner.set_context(
       doc:             node,
       page:            context.page,
       browser_session: context.browser_session,
-      user:            user
     )
     read_with_json(
       runner: runner,
@@ -62,7 +61,7 @@ class ExtractJsonFromPage
 
   def read_with_json(opts)
     runner, instance = opts[:runner], opts[:instance]
-    adapter.attribute_setters.each do |attribute_name, setters|
+    adapter.property_queries.each do |attribute_name, setters|
       raise "Property #{attribute_name} is not defined in schema #{adapter.schema_key} for user #{user}" unless adapter.validate_property(attribute_name)
       setters.detect do |setter|
         if setter.is_a?(Hash)
@@ -83,12 +82,10 @@ class ExtractJsonFromPage
 
   def read_with_script(opts)
     runner, instance = opts[:runner], opts[:instance]
-    runner.attributes.each do |attribute_name, value|
-      raise "Property #{attribute_name} is not defined in schema #{adapter.schema_key} for user #{user}" unless adapter.validate_property(attribute_name)
-      result = value.is_a?(Proc) ? value.call(instance) : value
-      instance[attribute_name.to_s] = result
+    runner.run(instance)
+    instance.each do |attribute_name, value|
+      raise "Property #{attribute_name} is not defined in schema #{adapter.schema.name}" unless adapter.validate_property(attribute_name)
     end
-
     instance
   end
 
