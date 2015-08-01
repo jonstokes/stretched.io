@@ -13,7 +13,7 @@ module Document
 
     def runners
       @runners ||= scripts.map do |script_name|
-        # Script.runner(script_name) -- for when Smelter is included
+        Script.runner(script_name)
       end
     end
 

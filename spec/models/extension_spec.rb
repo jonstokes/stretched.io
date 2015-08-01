@@ -1,5 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe Extension, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  context "validations" do
+    subject { create(:extension) }
+
+    it { is_expected.to be_valid }
+
+    it "requires name" do
+      subject.name = nil
+      expect(subject).not_to be_valid
+    end
+
+    it "requires source" do
+      subject.source = nil
+      expect(subject).not_to be_valid
+    end
+  end
 end
