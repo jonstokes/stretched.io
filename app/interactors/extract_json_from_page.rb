@@ -2,11 +2,12 @@ require "addressable/uri"
 
 class ExtractJsonFromPage
   include Interactor
-  include Shout
+  include Bellbro::Ringable
 
   attr_accessor :instance
 
-  def user;    context.user;    end
+  expects :adapter
+
   def adapter; context.adapter; end
 
   def call

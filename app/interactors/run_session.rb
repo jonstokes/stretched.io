@@ -4,7 +4,8 @@ class RunSession
   include Interactor
   include Sunbro
   include Bellbro::Ringable
-  
+
+  # Hooks
   before do
     stretched_session.start!
     @retry_sleep = Rails.env.test? ? 0.1 : 1
@@ -15,8 +16,11 @@ class RunSession
     stretched_session.stop!
   end
 
+  # Contract
+  expects :stretched_session, :browser_session, :timer
+
+  # Main
   def call
-    #context: stretched_session, browser_session, user, timer
     while !timed_out? && url = stretched_session.pop_url
       next unless page = Retryable.retryable(sleep: @retry_sleep, tries: 2) { scrape_page(url) }
 
@@ -59,11 +63,6 @@ class RunSession
       @objects[adapter.key] << format_objects_for_queue(adapter, page, [])
     end
     error "Page Error: #{page.error.message} at url #{page.url}" if page.error
-  rescue Java::JavaLang::OutOfMemoryError => e
-    error "OutOfMemoryError raised by session #{stretched_session.inspect}."
-    error "Dumping heap to #{bin_file}..."
-    result = `jmap -dump:live,format=b,file=#{bin_file} #{Process.pid}`
-    error "Heap to dumped with: #{result}"
   rescue Exception => e
     unless e.is_a?(Sidekiq::Shutdown)
       adapter.object_queue.add format_error_for_queue(adapter, page, e)
@@ -73,10 +72,6 @@ class RunSession
   end
 
   private
-
-  def bin_file
-    "#{Process.pid}-#{Time.now.to_i}-heap.bin"
-  end
 
   def format_error(e)
     error = "#{e.message} #{e.inspect}\n"

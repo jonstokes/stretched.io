@@ -1,23 +1,43 @@
 require 'spec_helper'
-require 'mocktra'
+require 'webmock/rspec'
 
 describe RunSession do
-  describe "#call" do
 
-    before :each do
-      clear_stretched
-      @user = "test@ironsights.com"
-      register_globals(@user)
+  let(:domain)           { "www.retailer.com" }
+  let(:session_queue)    { create(:session_queue,    domain: domain) }
+  let(:document_queue)   { create(:document_queue,   domain: domain) }
+  let(:document_adapter) { create(:document_adapter, domain: domain, document_queue: document_queue) }
+  let(:web_pages)        { 5.times.map { |n| create(:sunbro_page) } }
+
+  let(:sessions)       {
+    5.times.map do |n|
+      build(
+        :session,
+        session_queue:     session_queue,
+        document_adapters: [ document_adapter.name ],
+        urls:              [ url: web_pages[n].url.to_s ]
+      )
+    end
+  }
+
+  before :each do
+    web_pages.each do |page|
+      stub_request(:get, page.url.to_s).
+        to_return {
+          {
+            body:    page.body,
+            status:  page.code,
+            headers: page.headers
+          }
+        }
     end
 
-    describe "product pages" do
-      before :each do
-        @domain = "www.retailer.com"
-        register_site @domain, @user
-        Stretched::Registration.create_from_file("#{Rails.root}/spec/fixtures/registrations/globals.yml", @user)
-        @sessions = YAML.load_file("#{Rails.root}/spec/fixtures/sessions/www--retailer--com.yml")['sessions']
-      end
+    session_queue.add(sessions)
+  end
 
+
+  describe "#call" do
+    describe "product pages" do
       it "adds an empty JSON object for a 404 page" do
         Mocktra(@domain) do
           get '/products/1' do
@@ -25,14 +45,11 @@ describe RunSession do
           end
         end
 
-        object_q = Document::Queue.new "www.retailer.com/product_links", @user
-        expect(object_q.size).to be_zero
+        document_q = Document::Queue.new "www.retailer.com/product_links", @user
+        expect(document_q.size).to be_zero
 
-        ssn = Session::Session.new(@sessions.last.merge(key: "abcd123", user: @user))
-        result = RunSession.call(stretched_session: ssn)
-
-        expect(object_q.size).to eq(2)
-        object = object_q.pop
+        expect(document_q.size).to eq(2)
+        object = document_q.pop
         expect(object[:page]['code']).to eq(404)
         expect(object[:session]['key']).to eq("abcd123")
       end
@@ -46,13 +63,13 @@ describe RunSession do
           end
         end
 
-        object_q = Document::Queue.new "www.retailer.com/product_links", @user
-        expect(object_q.size).to be_zero
+        document_q = Document::Queue.new "www.retailer.com/product_links", @user
+        expect(document_q.size).to be_zero
 
         ssn = Session::Session.new(@sessions.last.merge(user: @user))
         result = RunSession.call(stretched_session: ssn)
 
-        expect(object_q.size).to eq(51)
+        expect(document_q.size).to eq(51)
         expect(result.stretched_session.urls_popped).to eq(2)
       end
 
@@ -65,12 +82,12 @@ describe RunSession do
           end
         end
 
-        object_q = Document::Queue.new "www.retailer.com/product_links", @user
-        expect(object_q.size).to be_zero
+        document_q = Document::Queue.new "www.retailer.com/product_links", @user
+        expect(document_q.size).to be_zero
 
         ssn = Session::Session.new(@sessions.first.merge(user: @user))
         result = RunSession.call(stretched_session: ssn)
-        expect(object_q.size).to eq(57)
+        expect(document_q.size).to eq(57)
         expect(result.stretched_session.urls_popped).to eq(8)
         expect(result.stretched_session.urls.size).to eq(0)
       end
@@ -85,12 +102,12 @@ describe RunSession do
         end
 
         timer = RateLimiter.new(1)
-        object_q = Document::Queue.new "www.retailer.com/product_links", @user
-        expect(object_q.size).to be_zero
+        document_q = Document::Queue.new "www.retailer.com/product_links", @user
+        expect(document_q.size).to be_zero
 
         ssn = Session::Session.new(@sessions.first.merge(user: @user))
         result = RunSession.call(stretched_session: ssn, timer: timer)
-        expect(object_q.size).to eq(1)
+        expect(document_q.size).to eq(1)
         expect(result.stretched_session.urls_popped).to eq(1)
         expect(result.stretched_session.size).to eq(7)
       end
@@ -114,15 +131,15 @@ describe RunSession do
           end
         end
 
-        object_q = Document::Queue.new "ammo.net/listings", @user
-        expect(object_q.size).to be_zero
+        document_q = Document::Queue.new "ammo.net/listings", @user
+        expect(document_q.size).to be_zero
 
         ssn = Session::Session.new(@sessions.first.merge(user: @user))
         result = RunSession.call(stretched_session: ssn)
         expect(result.stretched_session.urls_popped).to eq(1)
-        expect(object_q.size).to eq(18)
+        expect(document_q.size).to eq(18)
 
-        json = object_q.pop
+        json = document_q.pop
         page = json.page
         expect(page.body).to eq(true)
         expect(page.headers).not_to be_nil

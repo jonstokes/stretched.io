@@ -1,31 +1,9 @@
 require 'spec_helper'
-require 'mocktra'
-
-class Conn
-  include Sunbro
-end
-
+require 'webmock/rspec'
 
 describe ExtractJsonFromPage do
 
-  before :each do
-    clear_stretched
-    @user = "test@ironsights.com"
-    register_globals(@user)
-    @connection = Conn.new
-  end
-
-  after :each do
-    clear_stretched
-  end
-
   describe "#call" do
-    before :each do
-      @domain = "www.retailer.com"
-      @product_url = "http://#{@domain}/products/1"
-      register_site @domain, @user
-    end
-
     it "adds an empty JSON object for an invalid page" do
       Mocktra(@domain) do
         get '/products/1' do
@@ -35,7 +13,6 @@ describe ExtractJsonFromPage do
 
       page = @connection.get_page(@product_url)
       result = ExtractJsonFromPage.call(
-        user: @user,
         page: page,
         adapter: Document::Adapter.find("www.retailer.com/product_page", @user)
       )

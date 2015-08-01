@@ -12,7 +12,7 @@ describe RunSessionsWorker do
   let(:document_adapter) { create(:document_adapter, domain: domain, document_queue: document_queue) }
   let(:web_pages)        { 5.times.map { |n| create(:sunbro_page) } }
 
-  let(:sessions)       {
+  let(:sessions) {
     5.times.map do |n|
       build(
         :session,
