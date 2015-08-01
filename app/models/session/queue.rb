@@ -1,7 +1,8 @@
 module Session
   class Queue < ActiveRecord::Base
     include Redis::Objects
-
+    include CommonFinders
+    
     self.table_name = 'session_queues'
 
     belongs_to :rate_limit
@@ -88,8 +89,6 @@ module Session
         record
       end
     end
-
-    def db(&b); ActiveRecord::Base.connection_pool.with_connection(&b); end
 
     def limiter_key
       "#{self.class.name}::#{name}"
