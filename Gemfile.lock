@@ -59,7 +59,7 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
-    buzzsaw (0.0.1)
+    buzzsaw (0.0.2)
       activesupport (~> 4.2)
       htmlentities (~> 4.3)
       nokogiri (~> 1.6.6)
@@ -266,7 +266,7 @@ DEPENDENCIES
   bellbro!
   better_errors
   binding_of_caller
-  buzzsaw
+  buzzsaw (~> 0.0.2)
   byebug
   coffee-rails (~> 4.1.0)
   database_cleaner (~> 1.0)

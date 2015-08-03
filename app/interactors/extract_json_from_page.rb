@@ -1,5 +1,5 @@
 class ExtractJsonFromPage
-  include Interactor
+  include Troupe
   include Bellbro::Ringable
 
   expects  :adapter, :page

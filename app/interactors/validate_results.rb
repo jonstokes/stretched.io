@@ -1,5 +1,5 @@
 class ValidateResults
-  include Interactor
+  include Troupe
 
   expects :instance, :adapter
 

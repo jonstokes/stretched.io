@@ -1,7 +1,7 @@
 require 'benchmark'
 
 class RunSession
-  include Interactor
+  include Troupe
   include Sunbro
   include Bellbro::Ringable
 

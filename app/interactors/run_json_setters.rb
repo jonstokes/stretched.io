@@ -1,7 +1,7 @@
 require "addressable/uri"
 
 class RunJsonSetters
-  include Interactor
+  include Troupe
 
   expects :instance, :node, :page, :adapter
 
