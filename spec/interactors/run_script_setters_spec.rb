@@ -23,7 +23,7 @@ describe RunScriptSetters do
         adapter:  adapter
       )
 
-      expect(result.document.properties['title']).to eq(title.downcase)
+      expect(result.instance['title']).to eq(title.downcase)
     end
   end
 end
