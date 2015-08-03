@@ -1,7 +1,7 @@
 require "addressable/uri"
 
 class RunScriptSetters
-  include Interactor
+  include Troupe
 
   expects :instance, :node, :page, :adapter
 
@@ -22,6 +22,10 @@ class RunScriptSetters
 
   after do
     # FIXME: Doc should be added to queue here
-    context[:document] = Document.new(instance)
+    context[:document] = Document::Document.new(
+      document_adapter: adapter,
+      page:             page,
+      properties:       instance
+    )
   end
 end

@@ -18,5 +18,9 @@ module Document
         Script.runner(script_name)
       end
     end
+
+    def scripts
+      self[:scripts] || []
+    end
   end
 end

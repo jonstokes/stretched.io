@@ -2,22 +2,26 @@ FactoryGirl.define do
   factory :sunbro_page, class: Sunbro::Page do
     skip_create
 
-    transient { domain { "www.retailer.com" } }
+    transient do
+      domain           { "www.retailer.com" }
+      sequence(:title) { |n| "Page #{n}" }
+    end
+
     sequence(:url)  { |n| "http://#{domain}/#{n}" }
-    sequence(:body) { |n|
+    body            { |n|
       <<-EOS
         <html>
           <header>
-            <title>Page #{n}</title>
+            <title>#{title}</title>
           </header>
           <body>
           </body>
         </html>
       EOS
     }
-    code 200
+    code          200
     response_time 100
-    headers {
+    headers       {
       {
         "server": ["nginx"],
         "date": [Time.current.utc.to_s],

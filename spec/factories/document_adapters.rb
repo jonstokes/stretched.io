@@ -9,7 +9,7 @@ FactoryGirl.define do
     xpath       "//html"
     property_queries {
       {
-        title: [{find_by_xpath: {xpath: "//div"}}]
+        title: [{find_by_xpath: {xpath: "//title"}}]
       }
     }
   end

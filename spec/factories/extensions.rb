@@ -3,7 +3,7 @@ FactoryGirl.define do
     sequence(:name) { |n| "test/extension_#{n}"}
     source {
       <<-EOS
-        Extension.define #{name} do
+        Extension.define("#{name}") do
           extension do
             def downcase(str)
               str.try(:downcase)
