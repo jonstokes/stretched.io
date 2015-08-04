@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150730234440) do
+ActiveRecord::Schema.define(version: 20150804013407) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,8 @@ ActiveRecord::Schema.define(version: 20150730234440) do
     t.datetime "updated_at",         null: false
   end
 
+  add_index "document_adapters", ["name"], name: "index_document_adapters_on_name", using: :btree
+
   create_table "document_queues", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "name",          null: false
     t.uuid     "rate_limit_id", null: false
@@ -37,12 +39,16 @@ ActiveRecord::Schema.define(version: 20150730234440) do
     t.datetime "updated_at",    null: false
   end
 
+  add_index "document_queues", ["name"], name: "index_document_queues_on_name", using: :btree
+
   create_table "document_schemas", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "name",       null: false
     t.json     "data",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_index "document_schemas", ["name"], name: "index_document_schemas_on_name", using: :btree
 
   create_table "documents", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.json     "properties"
@@ -60,12 +66,16 @@ ActiveRecord::Schema.define(version: 20150730234440) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "extensions", ["name"], name: "index_extensions_on_name", using: :btree
+
   create_table "mappings", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "name",       null: false
     t.json     "terms",      null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_index "mappings", ["name"], name: "index_mappings_on_name", using: :btree
 
   create_table "pages", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.uuid     "session_id",    null: false
@@ -78,6 +88,7 @@ ActiveRecord::Schema.define(version: 20150730234440) do
   end
 
   create_table "rate_limits", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+    t.string   "name",          null: false
     t.time     "peak_start",    null: false
     t.integer  "peak_duration", null: false
     t.float    "peak_rate",     null: false
@@ -86,12 +97,16 @@ ActiveRecord::Schema.define(version: 20150730234440) do
     t.datetime "updated_at",    null: false
   end
 
+  add_index "rate_limits", ["name"], name: "index_rate_limits_on_name", using: :btree
+
   create_table "scripts", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "name",       null: false
     t.text     "source",     null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_index "scripts", ["name"], name: "index_scripts_on_name", using: :btree
 
   create_table "session_queues", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "name",          null: false
@@ -101,6 +116,8 @@ ActiveRecord::Schema.define(version: 20150730234440) do
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
+
+  add_index "session_queues", ["name"], name: "index_session_queues_on_name", using: :btree
 
   create_table "sessions", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.uuid     "session_queue_id",  null: false
