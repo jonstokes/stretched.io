@@ -15,6 +15,8 @@ gem 'redis-objects', '~> 1.2'
 gem 'interactor', '~> 3.1.0'
 gem 'troupe', '~> 0.1.0'
 gem 'retryable'
+gem 'json-schema', '~> 2.5.1'
+gem 'activerecord_json_validator', '~> 1.0.0'
 
 gem 'sunbro', '~> 0.1.2'
 #gem 'bellbro', '~> 0.3.0'

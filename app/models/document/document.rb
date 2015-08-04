@@ -9,16 +9,11 @@ module Document
     validates :document_adapter_id, presence: true
     validates :document_queue_id,   presence: true
     validates :page_id,             presence: true
-    validates :properties,          presence: true
-    validate  :properties,          :valid_properties
+    validates :properties,          presence: true, json: { schema: :schema }
 
-    private
-
-    def valid_properties
-      return if properties.is_a?(Hash)
-      errors.add(:properties, "Properties must be a Hash")
-
-      # FIXME: Validate properties against JSON schema
+    def schema
+      return {} unless self.document_adapter
+      self.document_adapter.schema
     end
   end
 end

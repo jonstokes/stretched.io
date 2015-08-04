@@ -22,5 +22,9 @@ module Document
     def scripts
       self[:scripts] || []
     end
+
+    def schema
+      document_schema.data
+    end
   end
 end

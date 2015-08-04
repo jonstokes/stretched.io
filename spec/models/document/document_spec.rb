@@ -13,8 +13,8 @@ RSpec.describe Document::Document, type: :model do
       end
     end
 
-    it "requires properties to be a Hash" do
-      subject.properties = "string"
+    it "validates properties against the adapter's schema" do
+      subject.properties = { "price" => 100 }
       expect(subject).not_to be_valid
     end
   end
