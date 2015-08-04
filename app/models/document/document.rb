@@ -17,6 +17,8 @@ module Document
     def valid_properties
       return if properties.is_a?(Hash)
       errors.add(:properties, "Properties must be a Hash")
+
+      # FIXME: Validate properties against JSON schema
     end
   end
 end
