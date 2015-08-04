@@ -4,8 +4,22 @@ class ValidateResults
   expects :instance, :adapter
 
   def call
-    instance.select! do |attribute_name, value|
-      adapter.validate_with_schema(attribute_name, value)
+    instance.reject! do |attribute_name, _|
+      invalid_properties.include?(attribute_name)
     end
+  end
+
+  def invalid_properties
+    @invalid_properties ||= errors.map do |error|
+      extract_property_from_error(error)
+    end
+  end
+
+  def errors
+    JSON::Validator.fully_validate(adapter.schema, instance, errors_as_objects: true)
+  end
+
+  def extract_property_from_error(error)
+    error[:fragment].split("/").last
   end
 end

@@ -16,6 +16,7 @@ RSpec.describe Document::Document, type: :model do
     it "validates properties against the adapter's schema" do
       subject.properties = { "price" => 100 }
       expect(subject).not_to be_valid
+      expect(subject.errors.messages[:properties].first).to include("The property '#/' did not contain a required property of 'title' in schema")
     end
   end
 end
