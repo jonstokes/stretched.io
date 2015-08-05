@@ -11,5 +11,7 @@ FactoryGirl.define do
     code          { source.code }
     response_time { source.response_time }
     headers       { source.headers }
+    body          { source.body }
+    doc           { source.doc }
   end
 end

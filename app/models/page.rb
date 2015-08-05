@@ -2,8 +2,10 @@ class Page < ActiveRecord::Base
   belongs_to :session,   class_name: "Session::Session"
   has_many   :documents, class_name: "Document::Document"
 
+  attr_accessor :doc, :body
+
   validates :url,           presence: true
-  validate :url,            :valid_url_format
+  validate  :url,           :valid_url_format
   validates :code,          presence: true, numericality: { greater_than: 99, less_than: 506 }
   validates :headers,       presence: true
   validates :response_time, presence: true, numericality: { greater_than: 0 }

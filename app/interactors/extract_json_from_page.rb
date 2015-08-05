@@ -11,6 +11,7 @@ class ExtractJsonFromPage
       page.doc.xpath(adapter.xpath).map do |node|
         RunSetters.call(
           node:            node,
+          adapter:         adapter,
           page:            page,
           browser_session: browser_session
         ).document
