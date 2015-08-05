@@ -50,7 +50,6 @@ class RunSession
   def parse_page(page, adapter)
     if page.is_valid?
       results = ExtractJsonFromPage.call(
-        user:            stretched_session.user,
         page:            page,
         adapter:         adapter,
         browser_session: browser_session
