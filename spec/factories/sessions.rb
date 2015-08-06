@@ -7,6 +7,8 @@ FactoryGirl.define do
     end
     page_format       :html
     document_adapters { ["#{domain}/product"] }
-    urls              { url_count.times.map { |n| "http://#{domain}/#{n}" } }
+    urls              {
+      url_count.times.map { |n| { url: "http://#{domain}/#{n}" } } 
+    }
   end
 end

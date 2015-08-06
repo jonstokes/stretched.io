@@ -123,7 +123,7 @@ ActiveRecord::Schema.define(version: 20150804013407) do
     t.uuid     "session_queue_id",  null: false
     t.string   "page_format",       null: false
     t.text     "document_adapters", null: false, array: true
-    t.text     "urls",              null: false, array: true
+    t.json     "urls",              null: false
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
   end

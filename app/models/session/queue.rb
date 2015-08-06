@@ -2,7 +2,7 @@ module Session
   class Queue < ActiveRecord::Base
     include Redis::Objects
     include CommonFinders
-    
+
     self.table_name = 'session_queues'
 
     belongs_to :rate_limit
@@ -29,7 +29,7 @@ module Session
     end
 
     def size
-      sessions.count
+      db { sessions.count }
     end
     alias_method :count, :size
 
