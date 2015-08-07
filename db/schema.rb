@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150804013407) do
+ActiveRecord::Schema.define(version: 20150806155547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,11 +52,9 @@ ActiveRecord::Schema.define(version: 20150804013407) do
 
   create_table "documents", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.json     "properties"
-    t.uuid     "document_queue_id",   null: false
-    t.uuid     "document_adapter_id", null: false
-    t.uuid     "page_id",             null: false
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
+    t.uuid     "session_reader_id", null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
   create_table "extensions", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
@@ -76,16 +74,6 @@ ActiveRecord::Schema.define(version: 20150804013407) do
   end
 
   add_index "mappings", ["name"], name: "index_mappings_on_name", using: :btree
-
-  create_table "pages", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.uuid     "session_id",    null: false
-    t.string   "url",           null: false
-    t.integer  "code",          null: false
-    t.integer  "response_time", null: false
-    t.json     "headers",       null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
 
   create_table "rate_limits", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "name",          null: false
@@ -119,13 +107,20 @@ ActiveRecord::Schema.define(version: 20150804013407) do
 
   add_index "session_queues", ["name"], name: "index_session_queues_on_name", using: :btree
 
+  create_table "session_readers", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
+    t.uuid     "session_queue_id",    null: false
+    t.uuid     "session_id",          null: false
+    t.uuid     "document_adapter_id", null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
   create_table "sessions", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.uuid     "session_queue_id",  null: false
-    t.string   "page_format",       null: false
-    t.text     "document_adapters", null: false, array: true
-    t.json     "urls",              null: false
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.uuid     "session_queue_id"
+    t.string   "page_format",      null: false
+    t.json     "urls",             null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
 end

@@ -6,7 +6,8 @@ module Session
     self.table_name = 'session_queues'
 
     belongs_to :rate_limit
-    has_many   :sessions, class_name: "Session::Session"
+    has_many   :sessions,        class_name: "Session::Session"
+    has_many   :session_readers, class_name: "Session::Reader"
 
     validates :name,          presence: true
     validates :max_size,      presence: true, numericality: { greater_than: 0 }
@@ -25,7 +26,11 @@ module Session
     alias_method :add, :push
 
     def pop
-      with_limit { _pop }
+      db do |conn|
+        next unless record = sessions.lock(true).first
+        record.update!(session_queue: nil)
+        record
+      end
     end
 
     def size
@@ -77,17 +82,8 @@ module Session
     private
 
     def _push(session)
-      session.session_queue = self
-      db { session.save! }
+      db { session.update(session_queue: self) }
       session
-    end
-
-    def _pop
-      db do |conn|
-        next unless record = sessions.lock(true).first
-        record.destroy
-        record
-      end
     end
 
     def limiter_key

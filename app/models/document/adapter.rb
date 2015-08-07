@@ -26,5 +26,9 @@ module Document
     def schema
       document_schema.data
     end
+
+    def queue
+      document_queue
+    end
   end
 end

@@ -7,21 +7,21 @@ describe RunSession do
   let(:session_queue)    { create(:session_queue,    domain: domain) }
   let(:document_queue)   { create(:document_queue,   domain: domain) }
   let(:document_adapter) { create(:document_adapter, domain: domain, document_queue: document_queue) }
-  let(:web_pages)        { 5.times.map { |n| create(:sunbro_page) } }
-
-  let(:sessions)       {
+  let(:pages)            { 5.times.map { |n| create(:page) } }
+  let(:timer)            { Bellbro::Timer.new }
+  let(:sessions)         {
     5.times.map do |n|
       build(
         :session,
-        session_queue:     session_queue,
-        document_adapters: [ document_adapter.name ],
-        urls:              [ url: web_pages[n].url.to_s ]
+        session_queue: session_queue,
+        adapter_names: [ document_adapter.name ],
+        urls:          [ url: pages[n].url.to_s ]
       )
     end
   }
 
   before :each do
-    web_pages.each do |page|
+    pages.each do |page|
       stub_request(:get, page.url.to_s).
         to_return {
           {
@@ -35,124 +35,51 @@ describe RunSession do
     session_queue.add(sessions)
   end
 
+  context "scraping pages" do
+    let(:html_page)  { create(:page, url: "http://#{domain}/1.html") }
+    let(:xml_page)   { create(:page, url: "http://#{domain}/1.xml") }
+    let(:dhtml_page) { create(:page, url: "http://#{domain}/2.html") }
+    let(:ssn)        { create(:session, domain: domain, urls: [html_page.url.to_s])}
 
-  describe "#call" do
-    describe "product pages" do
-      it "adds an empty JSON object for a 404 page" do
-        Mocktra(@domain) do
-          get '/products/1' do
-            404
-          end
-        end
-
-        document_q = Document::Queue.new "www.retailer.com/product_links", @user
-        expect(document_q.size).to be_zero
-
-        expect(document_q.size).to eq(2)
-        object = document_q.pop
-        expect(object[:page]['code']).to eq(404)
-        expect(object[:session]['key']).to eq("abcd123")
-      end
-
-      it "runs a session and extracts JSON objects from catalog pages" do
-        Mocktra(@domain) do
-          get '/catalog/1' do
-            File.open("#{Rails.root}/spec/fixtures/web_pages/www--retailer--com/1911-listing-page.html") do |file|
-              file.read
-            end
-          end
-        end
-
-        document_q = Document::Queue.new "www.retailer.com/product_links", @user
-        expect(document_q.size).to be_zero
-
-        ssn = Session::Session.new(@sessions.last.merge(user: @user))
-        result = RunSession.call(stretched_session: ssn)
-
-        expect(document_q.size).to eq(51)
-        expect(result.stretched_session.urls_popped).to eq(2)
-      end
-
-      it "runs a session with link expansions and extracts JSON objects from catalog pages" do
-        Mocktra(@domain) do
-          get '/catalog/1' do
-            File.open("#{Rails.root}/spec/fixtures/web_pages/www--retailer--com/1911-listing-page.html") do |file|
-              file.read
-            end
-          end
-        end
-
-        document_q = Document::Queue.new "www.retailer.com/product_links", @user
-        expect(document_q.size).to be_zero
-
-        ssn = Session::Session.new(@sessions.first.merge(user: @user))
-        result = RunSession.call(stretched_session: ssn)
-        expect(document_q.size).to eq(57)
-        expect(result.stretched_session.urls_popped).to eq(8)
-        expect(result.stretched_session.urls.size).to eq(0)
-      end
-
-      it "times out when the timer is up and adds the session back to the queue" do
-        Mocktra(@domain) do
-          get '/catalog/1' do
-            File.open("#{Rails.root}/spec/fixtures/web_pages/www--retailer--com/1911-listing-page.html") do |file|
-              file.read
-            end
-          end
-        end
-
-        timer = RateLimiter.new(1)
-        document_q = Document::Queue.new "www.retailer.com/product_links", @user
-        expect(document_q.size).to be_zero
-
-        ssn = Session::Session.new(@sessions.first.merge(user: @user))
-        result = RunSession.call(stretched_session: ssn, timer: timer)
-        expect(document_q.size).to eq(1)
-        expect(result.stretched_session.urls_popped).to eq(1)
-        expect(result.stretched_session.size).to eq(7)
-      end
-
+    it "scrapes an HTML format page" do
+      expect_any_instance_of(RunSession).to receive(:get_page).
+                                            with(html_page.url.to_s, force_format: :html)
+      ssn.page_format = 'html'
+      RunSession.call(timer: timer, ssn: ssn, url: html_page.url.to_s)
     end
 
-    describe "product feeds" do
+    it "scrapes an XML format page" do
+      expect_any_instance_of(RunSession).to receive(:get_page).
+                                            with(xml_page.url.to_s, force_format: :xml)
+      ssn.page_format = 'xml'
+      RunSession.call(timer: timer, ssn: ssn, url: xml_page.url.to_s)
+    end
 
-      before :each do
-        Stretched::Registration.create_from_file("#{Rails.root}/spec/fixtures/registrations/globals.yml", @user)
-        register_site "ammo.net", @user
-        @sessions = YAML.load_file("#{Rails.root}/spec/fixtures/sessions/ammo--net.yml")['sessions']
-      end
-
-      it "runs a session and extracts objects from product feeds" do
-        Mocktra("ammo.net") do
-          get '/media/feeds/genericammofeed.xml' do
-            File.open("#{Rails.root}/spec/fixtures/rss_feeds/full_product_feed.xml") do |file|
-              file.read
-            end
-          end
-        end
-
-        document_q = Document::Queue.new "ammo.net/listings", @user
-        expect(document_q.size).to be_zero
-
-        ssn = Session::Session.new(@sessions.first.merge(user: @user))
-        result = RunSession.call(stretched_session: ssn)
-        expect(result.stretched_session.urls_popped).to eq(1)
-        expect(document_q.size).to eq(18)
-
-        json = document_q.pop
-        page = json.page
-        expect(page.body).to eq(true)
-        expect(page.headers).not_to be_nil
-        expect(page.code).to eq(200)
-
-        object = json.object
-        expect(object.url).to include("ammo.net")
-        expect(object.location).to eq("Atlanta, GA 30348")
-        expect(object.price_in_cents).not_to be_nil
-        expect(object.availability).not_to be_nil
-        expect(object.product_category1).to eq("Ammunition")
-      end
+    it "scrapes an dynamic page" do
+      expect_any_instance_of(RunSession).to receive(:render_page).
+                                            with(dhtml_page.url.to_s)
+      ssn.page_format = 'dhtml'
+      RunSession.call(timer: timer, ssn: ssn, url: dhtml_page.url.to_s)
     end
   end
 
+  describe "#call" do
+    it "runs a session and extracts JSON objects from catalog pages" do
+      pending "Example"
+      expect(true).to eq(false)
+    end
+
+    it "times out when the timer is up and adds the session back to the queue" do
+      pending "Example"
+      expect(true).to eq(false)
+    end
+
+    it "adds an empty JSON object for a 404 page" do
+      pending "Example"
+      expect(true).to eq(false)
+      #document = document_q.pop
+      #expect(document.page.code).to eq(404)
+      #expect(document.session.id).to eq("abcd123")
+    end
+  end
 end

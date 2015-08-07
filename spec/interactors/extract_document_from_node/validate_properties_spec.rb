@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ValidateResults do
+describe ExtractDocumentFromNode::ValidateProperties do
   let(:instance) {
     {
       'title' => 'Page 1',
@@ -27,10 +27,11 @@ describe ValidateResults do
   }
 
   let(:adapter) { create(:document_adapter, document_schema: schema) }
+  let(:reader)   { create(:session_reader, document_adapter: adapter)}
 
   describe "#call" do
     it "deletes invalid key/value pairs from the instance hash" do
-      result = ValidateResults.call(instance: instance, adapter: adapter)
+      result = ExtractDocumentFromNode::ValidateProperties.call(instance: instance, reader: reader)
       expect(result.instance).to eq(
         {'title' => 'Page 1', 'unknown_attribute' => 100}
       )

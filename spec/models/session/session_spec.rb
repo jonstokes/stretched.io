@@ -2,20 +2,40 @@ require 'rails_helper'
 
 RSpec.describe Session, type: :model do
   context "validations" do
-    subject { create(:session) }
+    subject { build(:session) }
 
     it { is_expected.to be_valid }
 
-    %w(session_queue_id page_format document_adapters).each do |attr|
-      it "requires #{attr}" do
-        subject.send("#{attr}=", nil)
-        expect(subject).not_to be_valid
-      end
+    it "requires page_format" do
+      subject.page_format = nil
+      expect(subject).not_to be_valid
+    end
+
+    it "requires adapter_names" do
+      subject.adapter_names = nil
+      expect(subject).not_to be_valid
     end
 
     it "requires page_format to be one of :html, :xml, :dhtml" do
       subject.page_format = :test
       expect(subject).not_to be_valid
+    end
+  end
+
+  context "hooks" do
+    subject { create(:session) }
+
+    it "creates a Session::Reader for each adapter" do
+      expect(Session::Reader.where(session_id: subject.id)).not_to be_empty
+      expect(subject.document_adapters).not_to be_empty
+    end
+  end
+
+  describe "#queue" do
+    it "returns a handle to the session queue even after the session has been popped" do
+      session = create(:session)
+      session.update(session_queue: nil)
+      expect(session.queue).to be_a(Session::Queue)
     end
   end
 

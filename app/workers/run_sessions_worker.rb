@@ -45,7 +45,7 @@ class RunSessionsWorker < Bellbro::Worker
     status_update(true)
     session_q.with do |q|
       while !timed_out? && (ssn = q.pop) do
-        session = RunSession.call(stretched_session: ssn, timer: timer).stretched_session
+        session = RunSession.call(stretched_session: ssn, timer: timer).ssn
         log_session_stats(session)
         q.push session if session.urls.any?
       end

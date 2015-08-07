@@ -2,18 +2,32 @@ module Document
   class Document < ActiveRecord::Base
     self.table_name = 'documents'
 
-    belongs_to :document_adapter, class_name: "Document::Adapter"
-    belongs_to :document_queue,   class_name: "Document::Queue"
-    belongs_to :page
+    belongs_to :session_reader, class_name: "Session::Reader"
 
-    validates :document_adapter_id, presence: true
-    validates :document_queue_id,   presence: true
-    validates :page_id,             presence: true
+    validates :session_reader_id,   presence: true
     validates :properties,          presence: true, json: { message: ->(errors) { errors }, schema: :schema }
+    validates :page,                presence: true
+
+    attr_accessor :page, :error
+
+    def session
+      session_reader.session
+    end
+
+    def adapter
+      session_reader.document_adapter
+    end
+
+    def session_queue
+      session_reader.session_queue
+    end
+
+    def document_queue
+      adapter.queue
+    end
 
     def schema
-      return {} unless self.document_adapter
-      self.document_adapter.schema
+      adapter.schema
     end
   end
 end

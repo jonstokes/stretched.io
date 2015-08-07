@@ -1,20 +1,18 @@
 require 'spec_helper'
 require 'webmock/rspec'
 
-describe ExtractJsonFromPage do
+describe ExtractDocumentsFromPage do
 
   let(:domain)  { "www.retailer.com" }
   let(:url)     { "http://#{domain}/products/1" }
-  let(:adapter) { create(:document_adapter, domain: domain)}
 
   describe "#call" do
     it "adds an empty JSON document for an invalid page" do
-      web_page = create(
-        :sunbro_page,
+      page = create(
+        :page,
         url: url,
         body: "<html><head></head><body>Invalid Listing!</body></html>"
       )
-      page = create(:page, source: web_page)
 
       stub_request(:get, page.url.to_s).
         to_return {
@@ -25,9 +23,12 @@ describe ExtractJsonFromPage do
           }
         }
 
-      result = ExtractJsonFromPage.call(
-        page:    page,
-        adapter: adapter
+      adapter = create(:document_adapter, domain: domain)
+      ssn = create(:session, adapter_names: [adapter.name])
+
+      result = ExtractDocumentsFromPage.call(
+        page: page,
+        ssn:  ssn
       )
 
       expect(result.documents.size).to eq(1)
@@ -63,8 +64,8 @@ describe ExtractJsonFromPage do
         }
       )
 
-      web_page = create(
-        :sunbro_page,
+      page = create(
+        :page,
         url: url,
         body: <<-EOS
           <html>
@@ -78,7 +79,8 @@ describe ExtractJsonFromPage do
           </html>
         EOS
       )
-      page = create(:page, source: web_page)
+
+      ssn = create(:session, adapter_names: [adapter.name])
 
       stub_request(:get, page.url.to_s).
         to_return {
@@ -89,9 +91,9 @@ describe ExtractJsonFromPage do
           }
         }
 
-      result = ExtractJsonFromPage.call(
-        page:    page,
-        adapter: adapter
+      result = ExtractDocumentsFromPage.call(
+        page: page,
+        ssn:  ssn
       )
 
       expect(result.documents.size).to eq(1)
@@ -115,9 +117,9 @@ describe ExtractJsonFromPage do
     it "errors if the JSON adapter has an invalid attribute that doesn't match the schema" do
       pending "Example"
       expect {
-        ExtractJsonFromPage.call(
+        ExtractDocumentsFromPage.call(
           page: page,
-          adapter: adapter
+          ssn: adapter
         )
       }.to raise_error(RuntimeError, "Property listing_type is not defined in schema Listing")
     end
@@ -125,9 +127,9 @@ describe ExtractJsonFromPage do
     it "errors if the script has an invalid attribute that doesn't match the schema" do
       pending "Example"
       expect {
-        ExtractJsonFromPage.call(
+        ExtractDocumentsFromPage.call(
           page: page,
-          adapter: adapter
+          ssn: adapter
         )
       }.to raise_error(RuntimeError, "Property listing_type is not defined in schema Listing")
     end

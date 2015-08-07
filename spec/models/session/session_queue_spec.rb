@@ -68,7 +68,7 @@ RSpec.describe Session::Queue, type: :model do
 
         ssn = session_queue.pop
         expect(ssn).to be_a(Session::Session)
-        expect(ssn).not_to be_persisted
+        expect(session_queue.sessions).not_to include(ssn)
       end
     end
   end
