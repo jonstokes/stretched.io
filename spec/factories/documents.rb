@@ -1,8 +1,13 @@
 FactoryGirl.define do
-  factory :document, class: Document::Document do
-    association :session_reader, factory: :session_reader
+  factory :document, class: Document do
+    transient do
+      source  { create(:sunbro_page) }
+      page    { create(:page, source: source) }
+      adapter { create(:adapter) }
+    end
 
-    page        { create(:page) }
-    properties  {{ title: page.doc.at_xpath("//title").text }}
+    page_id     { page.id }
+    adapter_id  { adapter.id }
+    properties  {{ title: source.doc.at_xpath("//title").text }}
   end
 end

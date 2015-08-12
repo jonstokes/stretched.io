@@ -17,11 +17,16 @@ gem 'troupe', '~> 0.1.0'
 gem 'retryable'
 gem 'json-schema', '~> 2.5.1'
 gem 'activerecord_json_validator', '~> 1.0.0'
+gem 'elasticsearch-rails'
+gem "elasticsearch-persistence", require: 'elasticsearch/persistence/model'
+gem 'figaro'
+gem 'descriptive_statistics', '~> 2.4.0', :require => 'descriptive_statistics/safe'
 
-gem 'sunbro', '~> 0.1.2'
+gem 'sunbro', path: '../sunbro'
 #gem 'bellbro', '~> 0.3.0'
 gem 'bellbro', git: "http://github.com/jonstokes/bellbro.git"
-gem 'smelter', '~> 0.1.1'
+#gem 'smelter', '~> 0.1.3'
+gem 'smelter', path: '../smelter'
 gem 'buzzsaw', '~> 0.0.2'
 
 group :development do

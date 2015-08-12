@@ -1,9 +1,12 @@
+ENV["RAILS_ENV"] ||= "test"
+
 require File.expand_path("../../config/environment", __FILE__)
 
 require "rspec/rails"
 require "factory_girl_rails"
 
 ActiveRecord::Migration.maintain_test_schema!
+WebMock.disable_net_connect!(allow_localhost: true)
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.

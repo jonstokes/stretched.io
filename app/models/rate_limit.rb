@@ -1,15 +1,20 @@
-class RateLimit < ActiveRecord::Base
-  has_many :session_queues,  class_name: "Session::Queue"
-  has_many :document_queues, class_name: "Document::Queue"
+class RateLimit
+  include Elasticsearch::Persistence::Model
+  include Activisms
 
-  validates :name,          presence: true
+  attribute :peak_start,    DateTime, mapping: { type:  'date' }
+  attribute :peak_duration, Integer,  mapping: { type:  'integer' }
+  attribute :peak_rate,     Float,    mapping: { type:  'float' }
+  attribute :off_peak_rate, Float,    mapping: { type:  'float' }
+
+  validates :id,            presence: true
   validates :peak_start,    presence: true
   validates :peak_duration, presence: true
   validates :peak_rate,     presence: true
   validates :off_peak_rate, presence: true
 
   def with_limit(subject, &block)
-    # FIXME: Add redis support
+    # FIXME: Add redis db selection support
     limiter.exec_within_threshold(subject, threshold: 1, interval: rate) do
       limiter.add(subject)
       yield

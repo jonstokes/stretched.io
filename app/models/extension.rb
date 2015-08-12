@@ -1,11 +1,10 @@
-class Extension < ActiveRecord::Base
-  include CommonFinders
+class Extension
+  include Elasticsearch::Persistence::Model
   include Smelter::Extendable
-  
-  validates :name,   presence: true
-  validates :source, presence: true
+  include Activisms
 
-  def self.all_names
-    db { self.pluck(:name) }
-  end
+  attribute :source, String, mapping: { index: 'not_analyzed' }
+
+  validates :id,     presence: true
+  validates :source, presence: true
 end

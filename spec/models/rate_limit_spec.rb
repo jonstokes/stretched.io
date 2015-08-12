@@ -26,7 +26,7 @@ RSpec.describe RateLimit, type: :model do
 
     it { is_expected.to be_valid }
 
-    %w(name peak_start peak_duration peak_rate off_peak_rate).each do |attr|
+    %w(id peak_start peak_duration peak_rate off_peak_rate).each do |attr|
       it "requires #{attr}" do
         subject.send("#{attr}=", nil)
         expect(subject).not_to be_valid
@@ -36,15 +36,15 @@ RSpec.describe RateLimit, type: :model do
 
   describe "#rate" do
     it "returns the peak rate during peak hours" do
-      Timecop.travel(peak_time) {
+      Timecop.travel(peak_time) do
         expect(rate_limit.rate).to eq(peak_rate)
-      }
+      end
     end
 
     it "returns the off-peak rate during off-peak hours" do
-      Timecop.travel(off_peak_time) {
+      Timecop.travel(off_peak_time) do
         expect(rate_limit.rate).to eq(off_peak_rate)
-      }
+      end
     end
   end
 

@@ -1,11 +1,11 @@
 FactoryGirl.define do
   factory :script do
     transient { extension { create(:extension) } }
-    sequence(:name) { |n| "test/script_#{n}"}
+    sequence(:id) { |n| "test/script_#{n}"}
     source {
       <<-EOS
-        Script.define("#{name}") do
-          extensions '#{extension.name}'
+        Script.define("#{id}") do
+          extensions '#{extension.id}'
           script do
             title do |instance|
               downcase(instance['title'])

@@ -12,7 +12,7 @@ describe ExtractDocumentFromNode::ValidateProperties do
 
   let(:schema)  {
     create(
-      :document_schema,
+      :schema,
       data: {
         "type" => "object",
         "$schema" => "http://json-schema.org/draft-04/schema",
@@ -26,12 +26,11 @@ describe ExtractDocumentFromNode::ValidateProperties do
     )
   }
 
-  let(:adapter) { create(:document_adapter, document_schema: schema) }
-  let(:reader)   { create(:session_reader, document_adapter: adapter)}
+  let(:adapter) { create(:adapter, schema: schema) }
 
   describe "#call" do
     it "deletes invalid key/value pairs from the instance hash" do
-      result = ExtractDocumentFromNode::ValidateProperties.call(instance: instance, reader: reader)
+      result = ExtractDocumentFromNode::ValidateProperties.call(instance: instance, adapter: adapter)
       expect(result.instance).to eq(
         {'title' => 'Page 1', 'unknown_attribute' => 100}
       )

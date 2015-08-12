@@ -2,12 +2,12 @@ class ExtractDocumentFromNode
   class RunScriptSetters
     include Troupe
 
-    expects :instance, :node, :page, :reader
+    expects :instance, :node, :page, :adapter
 
     permits :browser_session
 
     def call
-      reader.document_adapter.runners.each do |script_runner|
+      adapter.runners.each do |script_runner|
         script_runner.set_context(
           doc:             node,
           page:            page,

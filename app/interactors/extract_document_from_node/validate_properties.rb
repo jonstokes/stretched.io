@@ -2,7 +2,7 @@ class ExtractDocumentFromNode
   class ValidateProperties
     include Troupe
 
-    expects :instance, :reader
+    expects :instance, :adapter
 
     def call
       instance.reject! do |attribute_name, _|
@@ -17,7 +17,7 @@ class ExtractDocumentFromNode
     end
 
     def errors
-      JSON::Validator.fully_validate(reader.document_adapter.schema, instance, errors_as_objects: true)
+      JSON::Validator.fully_validate(adapter.schema.data, instance, errors_as_objects: true)
     end
 
     def extract_property_from_error(error)

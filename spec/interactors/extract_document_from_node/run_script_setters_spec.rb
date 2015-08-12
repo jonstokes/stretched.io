@@ -2,15 +2,15 @@ require 'spec_helper'
 
 describe ExtractDocumentFromNode::RunScriptSetters do
   let(:title)    { "PAGE 1" }
-  let(:domain)   { "www.retailer.com" }
-  let(:instance) { { 'title' => title } }
+  let(:instance) { ActiveSupport::HashWithIndifferentAccess.new('title' => title) }
   let!(:script)  { create(:script) }
-  let(:page)     { create(:page,             domain: domain, title: title) }
-  let(:adapter)  { create(:document_adapter, domain: domain, scripts: [script.name]) }
-  let(:node)     { page.doc.at_xpath("//html") }
-  let(:reader)   { create(:session_reader, document_adapter: adapter)}
+  let(:source)   { create(:sunbro_page, title: title) }
+  let(:page)     { create(:page, source: source) }
+  let(:adapter)  { create(:adapter, scripts: [script.id]) }
+  let(:node)     { source.doc.at_xpath("//html") }
 
   before(:each) do
+    refresh_index
     Extension.register_all
   end
 
@@ -20,7 +20,7 @@ describe ExtractDocumentFromNode::RunScriptSetters do
         instance: instance,
         node:     node,
         page:     page,
-        reader:   reader
+        adapter:  adapter
       )
 
       expect(result.instance['title']).to eq(title.downcase)

@@ -2,13 +2,13 @@ class ExtractDocumentFromNode
   class BuildDocument
     include Troupe
 
-    expects :page, :instance, :reader
+    expects :page, :instance, :adapter
 
     provides(:document) do
-      Document::Document.new(
-        properties:     instance,
-        page:           page,
-        session_reader: reader
+      Document.new(
+        properties: instance,
+        page_id:    page.id,
+        adapter_id: adapter.id
       )
     end
   end

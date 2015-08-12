@@ -1,6 +1,6 @@
 FactoryGirl.define do
-  factory :document_schema, class: Document::Schema do
-    name "www.retailer.com/product"
+  factory :schema do
+    id   "www.retailer.com/product"
     data {
       {
         "type" => "object",

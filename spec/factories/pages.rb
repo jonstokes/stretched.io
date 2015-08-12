@@ -1,41 +1,18 @@
 FactoryGirl.define do
-  factory :page, class: Sunbro::Page do
-    skip_create
-
+  factory :page, class: Page do
     transient do
-      domain           { "www.retailer.com" }
       sequence(:title) { |n| "Page #{n}" }
+      feed             { create(:feed) }
+      source           { create(:sunbro_page, title: title) }
     end
 
-    sequence(:url)  { |n| "http://#{domain}/#{n}" }
-    body            { |n|
-      <<-EOS
-        <html>
-          <header>
-            <title>#{title}</title>
-          </header>
-          <body>
-          </body>
-        </html>
-      EOS
-    }
-    code          200
-    response_time 100
-    headers       {
-      {
-        "server": ["nginx"],
-        "date": [Time.current.utc.to_s],
-        "content-type": ["text/html; charset=UTF-8"],
-        "transfer-encoding": ["chunked"],
-        "connection": ["keep-alive"],
-      }
-    }
-
-    initialize_with do
-      new(
-        attributes[:url],
-        attributes.except(:url)
-      )
-    end
+    feed_id            { feed.id }
+    url                { source.url.to_s }
+    code               { source.code }
+    response_time      { source.response_time }
+    headers            { source.headers }
+    body               { source.body }
+    doc                { source.doc }
+    fetched_at         { Time.current }
   end
 end

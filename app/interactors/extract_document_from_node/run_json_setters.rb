@@ -2,11 +2,11 @@ class ExtractDocumentFromNode
   class RunJsonSetters
     include Troupe
 
-    expects :node, :page, :reader
+    expects :node, :page, :adapter
 
     permits :browser_session
 
-    provides(:instance) { {} }
+    provides(:instance) { ActiveSupport::HashWithIndifferentAccess.new }
 
     provides :runner do
       Script.runner
@@ -21,7 +21,7 @@ class ExtractDocumentFromNode
     end
 
     def call
-      reader.document_adapter.property_queries.each do |attribute_name, setters|
+      adapter.attribute_setters.each do |attribute_name, setters|
         setters.detect do |setter|
           if setter.is_a?(Hash)
             method = setter.reject {|k,v| k == "filters"}.first.first

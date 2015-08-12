@@ -1,27 +1,28 @@
 class ExtractDocumentsFromPage
   include Troupe
   include Bellbro::Ringable
+  include Chronograph
 
-  expects  :page, :ssn
+  expects  :page, :feed
 
   permits  :browser_session
 
+  benchmark_with :parse_times
+
   provides(:documents) do
-    ssn.session_readers.map do |reader|
-      if page.try(:is_valid?)
-        page.doc.xpath(reader.document_adapter.xpath).map do |node|
-          extract_document_from_node(node: node, reader: reader)
+    feed.adapters.map do |adapter|
+      page.doc.xpath(adapter.xpath).map do |node|
+        benchmark(adapter.id) do
+          extract_document_from_node(node: node, adapter: adapter)
         end
-      else
-        Document::Document.new(session_reader: reader, page: page, properties: {})
       end
     end.flatten
   end
 
-  def extract_document_from_node(node:, reader:)
+  def extract_document_from_node(node:, adapter:)
     ExtractDocumentFromNode.call(
       node:            node,
-      reader:          reader,
+      adapter:         adapter,
       page:            page,
       browser_session: browser_session
     ).document

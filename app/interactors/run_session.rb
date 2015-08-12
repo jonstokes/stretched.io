@@ -3,32 +3,43 @@ class RunSession
   include Chronograph
   include Sunbro
 
-  before { ssn.start! }
+  expects :feed, :timer
 
-  after { ssn.stop! }
+  provides(:conn) { Sunbro::Connection.new }
 
-  expects :ssn, :timer
+  benchmark_with :benchmarks
 
   def call
-    while !timed_out? && url = ssn.pop_url
-      page = measure(:scrape_time) do
-        Retryable.retryable(sleep: retry_sleep, tries: 2) { scrape_page(url) } || Sunbro::Page.new(url)
+    while !timed_out? && page = feed.pop_page
+      source = benchmark(:scrape_time) do
+        conn.fetch_page(
+          page.url,
+          force_format: feed.page_format.to_s.downcase,
+          tries:        2,
+          sleep:        retry_sleep
+        ) || Sunbro::Page.new(page.url)
       end
 
-      documents = measure(:parse_time) do
-        ExtractDocumentsFromPage.call(
+      page.update_from_source(source)
+      page.scrape_time = context.benchmarks[:scrape_time]
+
+      if source.valid?
+        result = ExtractDocumentsFromPage.call(
           page: page,
-          ssn: ssn,
+          feed: feed,
           browser_session: browser_session
-        ).documents
+        )
+
+        page.parse_times = result.parse_times
+
+        SaveDocuments.call(documents: result.documents)
       end
 
-      AddDocumentsToQueues.call(documents: documents)
-
-      # ssn.stats.parse_times << results.stats.parse_time
+      feed.session.run_stats(page)
+      page.save
     end
   ensure
-    close_http_connections
+    conn.close
   end
 
   def timed_out?
@@ -40,20 +51,6 @@ class RunSession
   end
 
   def browser_session
-    return unless @dhttp
-    @dhttp.session
-  end
-
-  def scrape_page(url)
-    case ssn.page_format.downcase
-    when "dhtml"
-      ssn.with_limit { render_page(url) }
-    when "xml"
-      ssn.with_limit { get_page(url, force_format: :xml) }
-    when "html"
-      ssn.with_limit { get_page(url, force_format: :html) }
-    else
-      ssn.with_limit { get_page(url) }
-    end
+    conn.session
   end
 end
