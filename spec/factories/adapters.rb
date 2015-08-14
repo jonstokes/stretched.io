@@ -7,6 +7,6 @@ FactoryGirl.define do
     schema_id         { schema.id }
     id                { "#{domain.id}/product" }
     xpath             "//html"
-    attribute_setters {{ title: [{find_by_xpath: {xpath: "//title"}}] }}
+    property_setters {{ title: [{find_by_xpath: {xpath: "//title"}}] }}
   end
 end

@@ -1,0 +1,66 @@
+- id: www.arstechnica.com/news_feed
+  schema_id: Article
+  xpath: //section[@id='stories-main']/ol/li[@class='post']/article[@class='report in-column']
+  scripts:
+  - global/normalize_timestamp
+  property_setters: &properties
+    id:
+    - find_by_xpath:
+        xpath: .//a/@href
+    url:
+    - find_by_xpath:
+        xpath: .//a/@href
+    title:
+    - find_by_xpath:
+        xpath: .//h1[@class='heading']/span[@class='whole']
+    author:
+    - find_by_xpath:
+        xpath: .//p[@class='byline']/a/span
+    leader:
+    - find_by_xpath:
+        xpath: .//p[@class='excerpt']
+    category:
+    - find_by_xpath:
+        xpath: .//a/@href
+        pattern: !ruby/regexp '/gadgets|security|technology/i'
+        label: tech
+    - find_by_xpath:
+        xpath: .//a/@href
+        pattern: !ruby/regexp '/business/i'
+        label: business
+    - find_by_xpath:
+        xpath: .//a/@href
+        pattern: !ruby/regexp '/tech-policy/i'
+        label: legal
+    - find_by_xpath:
+        xpath: .//a/@href
+        pattern: !ruby/regexp '/apple/i'
+        label: apple
+    timestamp:
+    - find_by_xpath:
+        xpath: .//p[@class='byline']/span[@class='date']
+        pattern: !ruby/regexp '/pattern/i'
+- id: www.arstechnica.com/on_the_radar
+  schema_id: Article
+  xpath: //section[@id='radar']/ol[@id='stories-brief']/li[@class='post']/article[@class='in-column']
+  scripts:
+  - global/normalize_timestamp
+  property_setters: *properties
+- id: www.wired.com/rss
+  schema_id: Article
+  scripts:
+  - global/normalize_timestamp
+  xpath: //item
+  property_setters:
+    id:
+    - find_by_xpath:
+        xpath: .//link
+    title:
+    - find_by_xpath:
+        xpath: .//title
+    leader:
+    - find_by_xpath:
+        xpath: .//description
+    timestamp:
+    - find_by_xpath:
+        xpath: //lastBuildDate

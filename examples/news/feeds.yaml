@@ -1,0 +1,28 @@
+---
+- domain_id: www.arstechnica.com
+  adapter_ids:
+  - www.arstechnica.com/news_feed
+  - www.arstechnica.com/on_the_radar
+  page_format: html
+  read_interval: 3600 #seconds
+  urls:
+  - url: http://arstechnica.com/
+- domain_id: www.arstechnica.com
+  adapter_ids:
+  - www.arstechnica.com/landing_page
+  page_format: html
+  read_interval: 3600 #seconds
+  urls:
+  - url: http://arstechnica.com/information-technology/page/PAGENUM/
+    start_at_page: 1
+    stop_at_page: 10
+  - url: http://arstechnica.com/business/page/PAGENUM/
+    start_at_page: 1
+    stop_at_page: 10
+- domain_id: www.wired.com
+  adapter_ids:
+  - www.wired.com/rss
+  page_format: xml
+  read_interval: 7200 #seconds
+  urls:
+  - url: http://www.wired.com/rss

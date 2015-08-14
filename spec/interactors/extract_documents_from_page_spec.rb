@@ -23,7 +23,7 @@ describe ExtractDocumentsFromPage do
     create(
       :adapter,
       schema: schema,
-      attribute_setters: {
+      property_setters: {
         title: [{find_by_xpath: {xpath: "//title"}}],
         price: [{find_by_xpath: {xpath: "//div[@id='price']"}}],
         stock: [{

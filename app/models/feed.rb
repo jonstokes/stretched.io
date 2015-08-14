@@ -85,6 +85,15 @@ class Feed
     page_queue.clear
   end
 
+  def link_pages
+    # FIXME: only accept urls that are part of this feed's domain.
+    # Batch write
+    expanded_urls.each do |url|
+      next if Page.url_exists?(url)
+      Page.create(feed_id: id, url: url)
+    end
+  end
+
   def self.clear_redis
     self.all.to_a.each(&:clear_redis)
   end
@@ -123,15 +132,6 @@ class Feed
       },
       sort: { fetched_at: { order: 'asc'} }
     }
-  end
-
-  def link_pages
-    # FIXME: only accept urls that are part of this feed's domain.
-    # Batch write
-    expanded_urls.each do |url|
-      next if Page.url_exists?(url)
-      Page.create(feed_id: id, url: url)
-    end
   end
 
   def unlink_pages

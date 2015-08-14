@@ -21,7 +21,7 @@ class ExtractDocumentFromNode
     end
 
     def call
-      adapter.attribute_setters.each do |attribute_name, setters|
+      adapter.property_setters.each do |attribute_name, setters|
         setters.detect do |setter|
           if setter.is_a?(Hash)
             method = setter.reject {|k,v| k == "filters"}.first.first
