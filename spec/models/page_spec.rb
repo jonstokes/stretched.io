@@ -15,6 +15,11 @@ RSpec.describe Page, type: :model do
       subject.url = nil
       expect(subject).not_to be_valid
     end
+
+    it "requires url to be a URI" do
+      subject.url = "foobar.com"
+      expect(subject).not_to be_valid
+    end
   end
 
   context "attributes" do

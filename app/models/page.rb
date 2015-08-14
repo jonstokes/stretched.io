@@ -20,7 +20,7 @@ class Page
   attribute :parse_times,   Hash,     mapping: { type:  'object' } # parse_times[adapter.name] = time
 
   validates :feed_id, presence: true
-  validates :url,     presence: true # FIXME: Validate URI format
+  validates :url,     presence: true, format: URI.regexp
 
   def id
     @_id = Page.url_to_id(url)
@@ -28,6 +28,10 @@ class Page
 
   def self.find_by_url(url)
     find(url_to_id(url))
+  end
+
+  def self.url_exists?(url)
+    exists?(Page.url_to_id(url))
   end
 
   def self.url_to_id(url)

@@ -1,18 +1,12 @@
 class RunFeedWorker < Bellbro::Worker
   sidekiq_options queue: :stretched, retry: true
 
-  attr_reader :domain, :feed
-
   before :should_run?
-  before do
-    @domain = Domain.find(context[:domain])
-    @feed   = Feed.find(context[:feed])
-    Buzzsaw::Extension.register_all
-  end
+  before { Extension.register_all }
 
   after do
     state = timed_out? ? 'timed out' : 'finished'
-    log "Worker for feed #{feed.id} #{state}. #{feed.page_queue.size} pages left in queue."
+    Rails.logger.info "Worker for feed #{feed.id} #{state}. #{feed.page_queue.size} pages left in queue."
     transition
   end
 
@@ -27,9 +21,17 @@ class RunFeedWorker < Bellbro::Worker
 
   private
 
+  def feed
+    @feed ||= Feed.find(context[:feed_id])
+  end
+
+  def domain
+    feed.domain
+  end
+
   def transition
     return unless should_run?
-    self.class.perform_async(queue: session_q.name)
+    self.class.perform_async(feed_id: feed.id)
   end
 
   def should_run?

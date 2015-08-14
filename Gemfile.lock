@@ -1,31 +1,3 @@
-GIT
-  remote: http://github.com/jonstokes/bellbro.git
-  revision: eee4c5b60c9ab0ba17924875165345692e8921f9
-  specs:
-    bellbro (0.3.0)
-      activesupport
-      airbrake
-      redis
-      retryable
-      sidekiq
-
-PATH
-  remote: ../smelter
-  specs:
-    smelter (0.1.3)
-      thread_safe
-
-PATH
-  remote: ../sunbro
-  specs:
-    sunbro (0.1.2)
-      activesupport
-      capybara
-      nokogiri
-      poltergeist
-      rest-client
-      retryable
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -76,6 +48,12 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    bellbro (0.3.1)
+      activesupport
+      airbrake
+      redis
+      retryable
+      sidekiq
     better_errors (2.1.1)
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
@@ -275,6 +253,8 @@ GEM
       redis (~> 3.2, >= 3.2.1)
       redis-namespace (~> 1.5, >= 1.5.2)
     slop (3.6.0)
+    smelter (0.1.4)
+      thread_safe
     sprockets (3.2.0)
       rack (~> 1.0)
     sprockets-rails (2.3.2)
@@ -282,6 +262,13 @@ GEM
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
     stringex (2.5.2)
+    sunbro (0.1.3)
+      activesupport
+      capybara
+      nokogiri
+      poltergeist
+      rest-client
+      retryable
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (1.4.1)
@@ -319,7 +306,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord_json_validator (~> 1.0.0)
-  bellbro!
+  bellbro (~> 0.3.1)
   better_errors
   binding_of_caller
   buzzsaw (~> 0.0.2)
@@ -346,8 +333,8 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   sidekiq (~> 3.4.2)
-  smelter!
-  sunbro!
+  smelter (~> 0.1.4)
+  sunbro (~> 0.1.3)
   timecop (~> 0.7.1)
   troupe (~> 0.1.0)
   turbolinks

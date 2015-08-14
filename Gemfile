@@ -22,11 +22,9 @@ gem "elasticsearch-persistence", require: 'elasticsearch/persistence/model'
 gem 'figaro'
 gem 'descriptive_statistics', '~> 2.4.0', :require => 'descriptive_statistics/safe'
 
-gem 'sunbro', path: '../sunbro'
-#gem 'bellbro', '~> 0.3.0'
-gem 'bellbro', git: "http://github.com/jonstokes/bellbro.git"
-#gem 'smelter', '~> 0.1.3'
-gem 'smelter', path: '../smelter'
+gem 'sunbro', '~> 0.1.3'
+gem 'bellbro', '~> 0.3.1'
+gem 'smelter', '~> 0.1.4'
 gem 'buzzsaw', '~> 0.0.2'
 
 group :development do

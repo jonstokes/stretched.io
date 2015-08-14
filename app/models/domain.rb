@@ -14,20 +14,30 @@ class Domain
   validates :max_readers,   presence: true
   validates :rate_limit_id, presence: true
 
-  def read(jid)
-    return false if full?
+  def read_with(jid)
     readers << jid
-    jid
   end
 
   def full?
-    readers.size >= concurrency
+    readers.size >= max_readers
+  end
+
+  def available?
+    !full?
   end
 
   def with_limit
     rate_limit.with_limit(limiter_key) do
       yield
     end
+  end
+
+  def clear_redis
+    readers.clear
+  end
+
+  def self.clear_redis
+    self.all.to_a.each(&:clear_redis)
   end
 
   private

@@ -81,16 +81,27 @@ describe RunSession do
   end
 
   describe "#call" do
-    it "runs a session and extracts JSON objects from pages" do
+    it "runs a feed session and extracts JSON objects from pages" do
       feed.start
       refresh_index
       RunSession.call(timer: timer, feed: feed)
       feed.stop
       refresh_index
+
+      feed = Feed.all.first
+      expect(feed.sessions.count).to eq(1)
       expect(Document.count).to eq(Page.count)
+
+      Document.all.each do |document|
+        expect(document.properties['title']).to eq("Page Title")
+      end
+
+      Page.all.each do |page|
+        expect(page.fetched_at).not_to be_nil
+      end
     end
 
-    it "times out when the timer is up and adds the session back to the queue" do
+    it "times out when the timer is up" do
       pending "Example"
       expect(true).to eq(false)
     end

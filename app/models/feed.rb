@@ -10,7 +10,6 @@ class Feed
   belongs_to_many :adapters
 
   attribute  :page_format,   String,  mapping: { index: 'not_analyzed' }
-  attribute  :adapter_id,    String,  mapping: { index: 'not_analyzed' }
   attribute  :urls,          Array,   mapping: {
                                         type: 'object',
                                         properties: {
@@ -78,16 +77,23 @@ class Feed
     super.except(:session, :expanded_urls, :page_queue)
   end
 
-  def clear_redis
-    page_queue.clear
-  end
-
   def has_stale_pages?
     Page.count(stale_pages_query) > 0
   end
 
+  def clear_redis
+    page_queue.clear
+  end
+
   def self.clear_redis
     self.all.to_a.each(&:clear_redis)
+  end
+
+  def self.each_stale
+    Feed.find_each do |feed|
+      next unless feed.has_stale_pages?
+      yield feed
+    end
   end
 
   private
@@ -123,7 +129,7 @@ class Feed
     # FIXME: only accept urls that are part of this feed's domain.
     # Batch write
     expanded_urls.each do |url|
-      next if Page.find_by_url(url)
+      next if Page.url_exists?(url)
       Page.create(feed_id: id, url: url)
     end
   end
