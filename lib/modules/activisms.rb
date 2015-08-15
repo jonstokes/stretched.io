@@ -30,9 +30,10 @@ module Activisms
       klass = opts[:class_name].try(:constantize) || attr.singularize.classify.constantize
       id_field = "#{attr.singularize}_ids"
 
-      attribute id_field.to_sym, String, mapping: { index: 'not_analyzed' }
+      attribute id_field.to_sym, String, mapping: { index: 'not_analyzed' }, default: []
 
       define_method attr do
+        return [] unless self.send(id_field).present?
         self.send(id_field).map do |oid|
           klass.find(oid) || raise("#{self.name} #{id}: #{klass.name} #{oid} does not exist!")
         end

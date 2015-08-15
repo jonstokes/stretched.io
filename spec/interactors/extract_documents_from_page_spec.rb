@@ -23,6 +23,7 @@ describe ExtractDocumentsFromPage do
     create(
       :adapter,
       schema: schema,
+      script_ids: [],
       property_setters: {
         title: [{find_by_xpath: {xpath: "//title"}}],
         price: [{find_by_xpath: {xpath: "//div[@id='price']"}}],
@@ -35,7 +36,7 @@ describe ExtractDocumentsFromPage do
       }
     )
   }
-  let!(:feed) { create(:feed, adapter: adapter) }
+  let!(:feed) { create(:feed, adapters: [adapter]) }
 
   let(:page_attributes) {{
     url: url,

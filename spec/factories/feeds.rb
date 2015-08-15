@@ -2,15 +2,14 @@ FactoryGirl.define do
   factory :feed, class: Feed do
     transient do
       domain    { create(:domain) }
-      adapter   { create(:adapter, domain: domain) }
-      url_count { 5 }
+      adapters  { [create(:adapter, domain: domain)] }
     end
 
     domain_id     { domain.id }
-    adapter_ids   { [adapter.id] }
+    adapter_ids   { adapters.map(&:id) }
     page_format   :html
     urls          {
-      url_count.times.map { |n| { url: "http://#{domain.id}/#{n}" } }
+      5.times.map { |n| { url: "http://#{domain.id}/#{n}" } }
     }
     read_interval { 3600 }
 

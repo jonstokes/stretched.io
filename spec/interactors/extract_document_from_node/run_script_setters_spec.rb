@@ -6,7 +6,7 @@ describe ExtractDocumentFromNode::RunScriptSetters do
   let!(:script)  { create(:script) }
   let(:source)   { create(:sunbro_page, title: title) }
   let(:page)     { create(:page, source: source) }
-  let(:adapter)  { create(:adapter, scripts: [script.id]) }
+  let(:adapter)  { create(:adapter, scripts: [script]) }
   let(:node)     { source.doc.at_xpath("//html") }
 
   before(:each) do

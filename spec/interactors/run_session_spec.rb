@@ -22,6 +22,7 @@ describe RunSession do
     create(
       :adapter,
       schema: schema,
+      script_ids: [],
       property_setters: {
         title: [{find_by_xpath: {xpath: "//title"}}],
         price: [{find_by_xpath: {xpath: "//div[@id='price']"}}],
@@ -53,20 +54,21 @@ describe RunSession do
       create(
         :page,
         page_attributes.merge(
-          url: "http://www.retailer.com/#{n}",
-          source: source,
-          feed_id: feed_id,
+          url:        "http://www.retailer.com/#{n}",
+          source:     source,
+          feed_id:    feed_id,
           fetched_at: nil
         )
       )
     }
   }
   let!(:feed) {
-    create(:feed, id: feed_id, adapter: adapter, urls: pages.map {|p| {url: p.url} })
+    create(:feed, id: feed_id, adapters: [adapter], urls: pages.map {|p| {url: p.url} })
   }
   let(:timer)  { Bellbro::Timer.new }
 
   before :each do
+    feed.clear_redis
     refresh_index
     pages.each do |page|
       stub_request(:get, page.url).
