@@ -14,7 +14,7 @@ RSpec.describe Feed, type: :model do
     end
 
     it "requires adapter_ids" do
-      subject.adapter_ids = nil
+      subject.adapter_names = nil
       expect(subject).not_to be_valid
     end
 

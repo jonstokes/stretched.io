@@ -6,8 +6,8 @@ RSpec.describe Script, type: :model do
 
     it { is_expected.to be_valid }
 
-    it "requires id" do
-      subject.id = nil
+    it "requires name" do
+      subject.name = nil
       expect(subject).not_to be_valid
     end
 

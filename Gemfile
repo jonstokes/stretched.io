@@ -21,10 +21,11 @@ gem 'elasticsearch-rails'
 gem "elasticsearch-persistence", require: 'elasticsearch/persistence/model'
 gem 'figaro'
 gem 'descriptive_statistics', '~> 2.4.0', :require => 'descriptive_statistics/safe'
+gem 'uuidtools'
 
 gem 'sunbro', '~> 0.1.3'
 gem 'bellbro', '~> 0.3.1'
-gem 'smelter', '~> 0.1.4'
+gem 'smelter', '0.1.2'
 gem 'buzzsaw', '~> 0.0.2'
 
 group :development do

@@ -23,7 +23,7 @@ class Feed
   attribute  :sessions,      Array,   mapping: { type:  'object' }, default: []
 
   validates :domain_id,     presence: true, length: {minimum: 3}
-  validates :adapter_ids,   presence: true
+  validates :adapter_names, presence: true
   validates :page_format,   presence: true, inclusion: { in: ['html', :html, 'xml', :xml, 'dhtml', :dhtml] }
   validates :urls,          presence: true
   validates :read_interval, presence: true, numericality: { greater_than_or_equal_to: 60, only_integer: true }

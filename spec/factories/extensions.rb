@@ -1,9 +1,9 @@
 FactoryGirl.define do
   factory :extension do
-    sequence(:id) { |n| "test/extension_#{n}"}
+    sequence(:name) { |n| "test/extension_#{n}"}
     source {
       <<-EOS
-        Extension.define("#{id}") do
+        Extension.define("#{name}") do
           extension do
             def downcase(str)
               str.try(:downcase)

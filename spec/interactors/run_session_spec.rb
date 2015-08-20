@@ -22,7 +22,7 @@ describe RunSession do
     create(
       :adapter,
       schema: schema,
-      script_ids: [],
+      script_names: [],
       property_setters: {
         title: [{find_by_xpath: {xpath: "//title"}}],
         price: [{find_by_xpath: {xpath: "//div[@id='price']"}}],

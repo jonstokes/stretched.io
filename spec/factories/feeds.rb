@@ -6,7 +6,7 @@ FactoryGirl.define do
     end
 
     domain_id     { domain.id }
-    adapter_ids   { adapters.map(&:id) }
+    adapter_names   { adapters.map(&:name) }
     page_format   :html
     urls          {
       5.times.map { |n| { url: "http://#{domain.id}/#{n}" } }

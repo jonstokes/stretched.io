@@ -1,13 +1,13 @@
 class RateLimit
   include Elasticsearch::Persistence::Model
   include Activisms
-
+  include NameAsUUID
+  
   attribute :peak_start,    DateTime, mapping: { type:  'date' }
   attribute :peak_duration, Integer,  mapping: { type:  'integer' }
   attribute :peak_rate,     Float,    mapping: { type:  'float' }
   attribute :off_peak_rate, Float,    mapping: { type:  'float' }
 
-  validates :id,            presence: true
   validates :peak_start,    presence: true
   validates :peak_duration, presence: true
   validates :peak_rate,     presence: true

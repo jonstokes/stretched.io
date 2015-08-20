@@ -26,7 +26,7 @@ RSpec.describe RateLimit, type: :model do
 
     it { is_expected.to be_valid }
 
-    %w(id peak_start peak_duration peak_rate off_peak_rate).each do |attr|
+    %w(name peak_start peak_duration peak_rate off_peak_rate).each do |attr|
       it "requires #{attr}" do
         subject.send("#{attr}=", nil)
         expect(subject).not_to be_valid

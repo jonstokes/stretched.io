@@ -6,9 +6,9 @@ FactoryGirl.define do
       scripts { [create(:script)] }
     end
     schema_id         { schema.id }
-    id                { "#{domain.id}/product" }
+    name              { "#{domain.id}/product" }
     xpath             "//html"
-    script_ids        { scripts.map(&:id) }
+    script_names        { scripts.map(&:name) }
     property_setters  {
       { title: [{find_by_xpath: {xpath: "//title"}}] }
     }

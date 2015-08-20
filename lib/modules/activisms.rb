@@ -28,14 +28,14 @@ module Activisms
     def belongs_to_many(attr, opts={})
       attr = attr.to_s
       klass = opts[:class_name].try(:constantize) || attr.singularize.classify.constantize
-      id_field = "#{attr.singularize}_ids"
+      id_field = "#{attr.singularize}_names"
 
       attribute id_field.to_sym, String, mapping: { index: 'not_analyzed' }, default: []
 
       define_method attr do
         return [] unless self.send(id_field).present?
-        self.send(id_field).map do |oid|
-          klass.find(oid) || raise("#{self.name} #{id}: #{klass.name} #{oid} does not exist!")
+        self.send(id_field).map do |oname|
+          klass.find_by_name(oname) || raise("#{self.name} #{id}: #{klass.name} #{oname} does not exist!")
         end
       end
     end
@@ -58,10 +58,6 @@ module Activisms
 
     def find_by(opts)
       self.search(query: { match: opts }).to_a
-    end
-
-    def find_by_name(name)
-      self.find_by(name: name).to_a.first
     end
   end
 end
