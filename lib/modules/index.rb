@@ -1,9 +1,13 @@
 module Index
-  MAPPED_CLASSES = %w(adapter document domain extension feed page rate_limit schema script)
+  MAPPED_CLASSES = %w(adapter domain extension feed page rate_limit schema script)
+
+  def self.client
+    Elasticsearch::Persistence.client
+  end
 
   def self.create
-    Elasticsearch::Persistence.client.indices.create(
-      index: INDEX_NAME,
+    client.indices.create(
+      index: name,
       body:  {
         settings: {},
         mappings: Hash[
@@ -15,12 +19,16 @@ module Index
   end
 
   def self.refresh
-    Elasticsearch::Persistence.client.indices.refresh(index: INDEX_NAME)
+    client.indices.refresh(index: name)
   end
 
   def self.delete
     clear_redis
-    Elasticsearch::Persistence.client.indices.delete(index: INDEX_NAME)
+    client.indices.delete(index: name)
+  end
+
+  def self.name
+    @@index_name ||= Figaro.env.index_name || [Rails.application.engine_name, Rails.env].join('-')
   end
 
   def self.clear_redis

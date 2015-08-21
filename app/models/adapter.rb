@@ -35,12 +35,14 @@ class Adapter
   belongs_to      :template, by: :name, class_name: "Adapter"
   belongs_to_many :scripts
   has_many        :documents
-  
+
   attribute :property_setters, String, mapping: { index: 'not_analyzed' }
   attribute :xpath,            String, mapping: { index: 'not_analyzed' }, default: '//html'
   attribute :id_property,      String, mapping: { index: 'not_analyzed' }
+  attribute :mapping,          String, mapping: { index: 'not_analyzed' }
 
   validates :schema_name,        presence: true
+  validates :mapping,            presence: true
   validates :property_setters,   presence: true
   validates :xpath,              presence: true
 

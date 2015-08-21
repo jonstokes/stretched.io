@@ -8,6 +8,12 @@ namespace :examples do
 
       puts "Loading news registrations into #{INDEX_NAME}..."
 
+      File.open(Rails.root.join('examples', 'news', 'mappings.json')) do |f|
+        JSON.parse(f.read)['mappings'].each do |id, data|
+          Mapping.create(data.merge(id: id))
+        end
+      end
+
       File.open(Rails.root.join('examples', 'news', 'article.json')) do |f|
         Schema.create(name: 'Article', data: JSON.parse(f.read))
       end

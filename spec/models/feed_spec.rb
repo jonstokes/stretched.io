@@ -9,7 +9,7 @@ RSpec.describe Feed, type: :model do
     it { is_expected.to be_valid }
 
     it "requires name" do
-      subject.page_format = nil
+      subject.name = nil
       expect(subject).not_to be_valid
     end
 

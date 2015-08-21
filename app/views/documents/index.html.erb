@@ -6,6 +6,7 @@
   <thead>
     <tr>
       <th>ID</th>
+      <th>Mapping</th>
       <th>Url</th>
       <th>Adapter</th>
       <th>Properties?</th>
@@ -17,6 +18,7 @@
     <% @documents.each do |document| %>
       <tr>
         <td><%= link_to document.id, document %></td>
+        <td><%= document.mapping %></td>
         <td><%= link_to document.page.url, document.page %></td>
         <td><%= link_to document.adapter.name, document.adapter %></td>
         <td><%= document.properties.present? %></td>

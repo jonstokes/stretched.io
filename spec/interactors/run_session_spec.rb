@@ -18,9 +18,25 @@ describe RunSession do
       }
     )
   }
+
+  let!(:mapping) {
+    create(
+      :mapping,
+      data: {
+        dynamic: 'strict',
+        properties: {
+          title:  { type: 'string' },
+          price:  { type: 'string'},
+          stock: { type: 'string', index: 'not_analyzed' }
+        }
+      }
+    )
+  }
+
   let!(:adapter) {
     create(
       :adapter,
+      mapping: mapping.id,
       schema: schema,
       script_names: [],
       property_setters: {

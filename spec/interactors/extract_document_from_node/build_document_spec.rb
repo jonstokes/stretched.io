@@ -10,6 +10,21 @@ describe ExtractDocumentFromNode::BuildDocument do
     }
   }
 
+  let(:mapping) {
+    create(
+      :mapping,
+      data: {
+        dynamic: 'strict',
+        properties: {
+          id:     { type: 'string', index: 'not_analyzed' },
+          title:  { type: 'string' },
+          price:  { type: 'integer'},
+          status: { type: 'string', index: 'not_analyzed' }
+        }
+      }
+    )
+  }
+
   let(:schema)  {
     create(
       :schema,
@@ -27,7 +42,7 @@ describe ExtractDocumentFromNode::BuildDocument do
     )
   }
 
-  let(:adapter) { create(:adapter, schema: schema) }
+  let(:adapter) { create(:adapter, schema: schema, mapping: mapping.id) }
   let(:page)    { create(:page) }
 
   describe "#call" do
@@ -41,7 +56,7 @@ describe ExtractDocumentFromNode::BuildDocument do
       expect(UUIDTools::UUID.validate(result.document.id)).to eq(true)
     end
 
-    it "builds a document with an ID in UUID format based on the adapter's id_property field" do
+    it "builds a document with an ID in UUID format based on the adapter's id_property field and mapping" do
       adapter.update(id_property: 'id')
       instance.merge!('id' => '://www.retailer.com/1')
 
@@ -52,7 +67,7 @@ describe ExtractDocumentFromNode::BuildDocument do
       )
       expect(result.document).to be_a(Document)
       expect(UUIDTools::UUID.validate(result.document.id)).to eq(true)
-      expect(result.document.id).to eq(UUIDTools::UUID.parse_string(instance['id']).to_s)
+      expect(result.document.id).to eq(UUIDTools::UUID.parse_string("#{adapter.mapping}#{instance['id']}").to_s)
     end
   end
 end

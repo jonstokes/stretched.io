@@ -1,11 +1,9 @@
 class Document
-  include Elasticsearch::Persistence::Model
-  include Activisms
+  include ActiveModel::Naming
+  include ActiveModel::Conversion
+  include ActiveModel::Validations
 
-  belongs_to :page
-  belongs_to :adapter
-
-  attribute :properties, Hash, mapping: { type: 'object' }
+  attr_accessor :id, :type, :page_id, :adapter_id, :properties, :version
 
   validates :id,         presence: true
   validates :page_id,    presence: true
@@ -14,15 +12,130 @@ class Document
   validate  :properties, :validate_with_schema
 
   def initialize(opts={})
-    opts[:properties] ||= opts['properties']
-    if id_source = (opts[:properties].try(:[],'id') || opts[:properties].try(:[],'id'))
-      opts[:id] = UUIDTools::UUID.parse_string(id_source).to_s
-    end
-    super
+    @id         = opts[:id]
+    @page_id    = opts[:page_id]
+    @adapter_id = opts[:adapter_id]
+    @version    = opts[:version]
+    @properties = opts[:properties]
+    @persisted  = opts[:persisted]
+  end
+
+  def persisted?
+    !!@persisted
+  end
+
+  def adapter
+    @adapter ||= Adapter.find(adapter_id)
+  end
+
+  def page
+    @page ||= Page.find(page_id)
+  end
+
+  def mapping
+    @mapping ||= adapter.try(:mapping)
   end
 
   def schema
     adapter.try(:schema).try(:data)
+  end
+
+  def save
+    Index.client.index(
+      index: Index.name,
+      type: mapping,
+      id:   id,
+      body: to_hash
+    )
+  end
+  alias_method :save!, :save
+
+  def to_hash
+    properties.merge(
+      adapter_id: adapter_id,
+      page_id:    page_id
+    )
+  end
+
+  def self.count
+    response = Index.client.search(
+      index: Index.name,
+      body:  query_body
+    )
+    response['hits']['total']
+  end
+
+  def self.all
+    response = Index.client.search(
+      index: Index.name,
+      body:  query_body
+    )
+    return [] unless response['hits'].try(:[], 'hits')
+    response['hits']['hits'].map { |r| new_from_response(r) }
+  end
+
+  def self.each
+    response = Index.client.search(
+      index: Index.name,
+      body:  query_body
+    )
+    return [] unless response['hits'].try(:[], 'hits')
+    response['hits']['hits'].each { |r| yield new_from_response(r) }
+  end
+
+  def self.find(id)
+    response = Index.client.get(
+      index: Index.name,
+      id:    id
+    )
+    new_from_response(response)
+  end
+
+  def self.find_by(opts)
+    response = Index.client.search(
+      index: Index.name,
+      body:  {
+        query: {
+          filtered: {
+            filter: {
+              and: Index::MAPPED_CLASSES.map { |klass| { not: { type: {value: klass} } } } +
+                opts.map { |k, v| { term: { k => v } } }
+            }
+          }
+        },
+        sort: { created_at: { order: 'asc'} }
+      }
+    )
+    response['hits']['hits'].map { |r| new_from_response(r) }
+  end
+
+
+  private
+
+  def self.query_body
+    {
+      query: {
+        filtered: {
+          filter: {
+            and: Index::MAPPED_CLASSES.map { |klass| { not: { type: {value: klass} } } }
+          }
+        }
+      },
+      sort: { created_at: { order: 'asc'} },
+      size: 100
+    }
+  end
+
+  def self.new_from_response(response)
+    opts = {
+      id:         response['_id'],
+      version:    response['_version'],
+      page_id:    response['_source'].delete('page_id'),
+      adapter_id: response['_source'].delete('adapter_id'),
+      properties: response['_source'],
+      persisted:  true
+    }
+    new(opts)
   end
 
   def validate_with_schema

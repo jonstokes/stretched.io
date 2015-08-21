@@ -1,5 +1,6 @@
 - name: www.arstechnica.com/news_feed
   schema_name: Article
+  mapping: article
   xpath: //section[@id='stories-main']/ol/li[@class='post']/article[@class='report in-column']
   id_property: id
   script_names:
@@ -42,6 +43,7 @@
         xpath: .//p[@class='byline']/span[@class='date']
 - name: www.arstechnica.com/on_the_radar
   schema_name: Article
+  mapping: article
   xpath: //section[@id='content']//ol/li//article
   script_names:
   - global/normalize_properties
@@ -49,6 +51,7 @@
   property_setters: *setters
 - name: www.arstechnica.com/landing_page
   schema_name: Article
+  mapping: article
   xpath: //section[@id='radar']/ol[@id='stories-brief']/li[@class='post']/article[@class='in-column']
   script_names:
   - global/normalize_properties
@@ -60,6 +63,7 @@
         xpath: .//h1[@class='heading']
 - name: www.wired.com/rss
   schema_name: Article
+  mapping: article
   script_names:
   - global/normalize_properties
   xpath: //item

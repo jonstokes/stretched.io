@@ -1,0 +1,16 @@
+{
+  "mappings": {
+    "article": {
+      "dynamic": "strict",
+      "properties": {
+        "id": { "type": "string", "index": "not_analyzed" },
+        "url": { "type": "string", "index": "not_analyzed" },
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "leader": { "type": "string" },
+        "category": { "type": "string", "index": "not_analyzed" },
+        "timestamp": { "type": "date"}
+      }
+    }
+  }
+}
