@@ -1,0 +1,26 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Extensions</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @extensions.each do |extension| %>
+      <tr>
+        <td><%= link_to extension.name, extension %></td>
+        <td><%= link_to 'Edit', edit_extension_path(extension) %></td>
+        <td><%= link_to 'Destroy', extension, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Extension', new_extension_path %>

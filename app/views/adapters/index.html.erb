@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Adapters</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Schema</th>
+      <th>Documents</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @adapters.each do |adapter| %>
+      <tr>
+        <td><%= link_to adapter.name, adapter %></td>
+        <td><%= link_to adapter.schema.name, adapter.schema %></td>
+        <td><%= adapter.documents.count %></td>
+        <td><%= link_to 'Edit', edit_adapter_path(adapter) %></td>
+        <td><%= link_to 'Destroy', adapter, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Adapter', new_adapter_path %>

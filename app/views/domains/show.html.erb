@@ -1,0 +1,38 @@
+<p id="notice"><%= notice %></p>
+
+<div class="col-xs-9">
+  <h2>Attributes</h2>
+  <dl class="dl-horizontal">
+    <dt>id</dt>
+    <dd><%= @domain.id %></dd>
+    <dt>name</dt>
+    <dd><%= @domain.name %></dd>
+    <dt>rate_limit</dt>
+    <dd><%= link_to @domain.rate_limit.name, @domain.rate_limit %></dd>
+    <dt>max_readers</dt>
+    <dd><%= @domain.max_readers %></dd>
+  </dl>
+  <%= link_to 'Edit', edit_domain_path(@domain) %> |
+  <%= link_to 'Back', domains_path %>
+  <hr>
+  <div class="col-xs-5">
+    <h2>Associations</h2>
+    <dl class="dl-horizontal">
+      <dt>feeds</dt>
+      <dd><%= @feeds.count %></dd>
+      <dt>pages</dt>
+      <dd><%= @pages.count %></dd>
+      <dt>documents</dt>
+      <dd><%= @document_count %></dd>
+    </dl>
+    <h2>Stats</h2>
+    <dl class="dl-horizontal">
+      <dt>stale pages</dt>
+      <dd><%= 0 %></dd>
+      <dt>last read at</dt>
+      <dd><%= 0 %></dd>
+      <dt>most recently read feed</dt>
+      <dd><%= 0 %></dd>
+    </dl>
+  </div>
+</div>

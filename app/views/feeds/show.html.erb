@@ -1,0 +1,50 @@
+<p id="notice"><%= notice %></p>
+
+<div class="col-xs-9">
+  <h2>Attributes</h2>
+  <dl class="dl-horizontal">
+    <dt>id</dt>
+    <dd><%= @feed.id %></dd>
+    <dt>name</dt>
+    <dd><%= @feed.name %></dd>
+    <dt>adapters</dt>
+    <dd>
+      <% @feed.adapters.each do |adapter| %>
+        <%= link_to adapter.name, adapter %><br/>
+      <% end %>
+    </dd>
+    <dt>read interval</dt>
+    <dd><%= @feed.read_interval %></dd>
+    <dt>page format</dt>
+    <dd><%= @feed.page_format %></dd>
+    <dt>urls</dt>
+    <dd><%= @feed.urls %></dd>
+  </dl>
+  <h3>Sessions</h3>
+  <% @feed.sessions.each do |session| %>
+    <dl class="dl-horizontal">
+      <% session.each do |k, v| %>
+      <dt><%= k %></dt>
+      <dd><%= v %></dd>
+      <% end %>
+    </dl>
+  <% end %>
+
+
+  <%= link_to 'Edit', edit_feed_path(@feed) %> |
+  <%= link_to 'Back', feeds_path %>
+
+  <hr>
+  <div class="col-xs-5">
+    <h2>Associations</h2>
+    <dl class="dl-horizontal">
+      <dt>domain</dt>
+      <dd><%= @feed.domain.name %></dd>
+      <dt>page queue size</dt>
+      <dd><%= @feed.page_queue.size %></dd>
+      <dt>pages</dt>
+      <dd><%= @feed.pages.count %></dd>
+    </dl>
+  </div>
+
+</div>

@@ -1,0 +1,32 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Feeds</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Page Format</th>
+      <th>Read Interval</th>
+      <th>Stale Pages</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @feeds.each do |feed| %>
+      <tr>
+        <td><%= link_to feed.name, feed %></td>
+        <td><%= feed.page_format %></td>
+        <td><%= feed.read_interval %></td>
+        <td><%= feed.stale_page_count %></td>
+        <td><%= link_to 'Edit', edit_feed_path(feed) %></td>
+        <td><%= link_to 'Destroy', feed, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Feed', new_feed_path %>

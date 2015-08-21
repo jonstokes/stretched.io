@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Rate Limits</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Peak Start</th>
+      <th>Peak Duration (hrs)</th>
+      <th>Peak Rate</th>
+      <th>Off-Peak Rate</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @rate_limits.each do |rate_limit| %>
+      <tr>
+        <td><%= link_to rate_limit.name, rate_limit %></td>
+        <td><%= rate_limit.peak_start %></td>
+        <td><%= rate_limit.peak_duration.to_f / (1.hour) %></td>
+        <td><%= rate_limit.peak_rate %></td>
+        <td><%= rate_limit.off_peak_rate %></td>
+        <td><%= link_to 'Edit', edit_rate_limit_path(rate_limit) %></td>
+        <td><%= link_to 'Destroy', rate_limit, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Rate limit', new_rate_limit_path %>

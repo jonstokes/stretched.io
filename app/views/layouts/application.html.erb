@@ -1,14 +1,37 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Stretched</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
-
-<%= yield %>
-
-</body>
+  <head>
+    <title>Stretched</title>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <div id="main-container" class="container-fluid">
+      <div class="row">
+        <div id="sidebar" class="col-xs-3">
+          <!-- sidebar content -->
+          <strong>Registrations</strong>
+          <ul>
+            <li><%= link_to "Domains", domains_path %></li>
+            <li><%= link_to "Rate Limits", rate_limits_path %></li>
+            <li><%= link_to "Schemas", schemas_path %></li>
+            <li><%= link_to "Extensions", extensions_path %></li>
+            <li><%= link_to "Scripts", scripts_path %></li>
+            <li><%= link_to "Adapters", adapters_path %></li>
+            <li><%= link_to "Feeds", feeds_path %></li>
+          </ul>
+          <strong>Output</strong>
+          <ul>
+            <li><%= link_to "Pages", pages_path %></li>
+            <li><%= link_to "Documents", documents_path %></li>
+          </ul>
+        </div>
+        <div id="main-content" class="col-xs-9">
+          <!--  main content -->
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

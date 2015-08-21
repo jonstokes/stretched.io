@@ -13,6 +13,6 @@
 ## Front-end
  - Basic HTTP auth
  - Views/scaffolding for all models
-  - CRUD: domain, feed, rate_limit, schema, adapter
-  - Read-only: page, session, document, extension, script
+  - CRUD: domain, feed, rate_limit, schema, adapter, extension, script
+  - Read-only: page, session, document
  - Dashboard for domains: num feeds, pages, docs, last read, session stats, etc.

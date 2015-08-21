@@ -1,0 +1,17 @@
+<p id="notice"><%= notice %></p>
+<div class="col-xs-9">
+  <h2>Attributes</h2>
+  <dl class="dl-horizontal">
+    <dt>id</dt>
+    <dd><%= @extension.id %></dd>
+    <dt>name</dt>
+    <dd><%= @extension.name %></dd>
+  </dl>
+
+  <h3>Source</h3>
+  <pre class="pre-scrollable">
+    <%= "\n" + @extension.source.strip %>
+  </pre>
+  <%= link_to 'Edit', edit_extension_path(@extension) %> |
+  <%= link_to 'Back', extensions_path %>
+</div>

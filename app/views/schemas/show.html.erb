@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<div class="col-xs-9">
+  <h2>Attributes</h2>
+  <dl class="dl-horizontal">
+    <dt>id</dt>
+    <dd><%= @schema.id %></dd>
+    <dt>name</dt>
+    <dd><%= @schema.name %></dd>
+  </dl>
+
+  <h3>Data</h3>
+  <pre class="pre-scrollable">
+    <%= @schema.data.to_yaml.strip %>
+  </pre>
+
+  <%= link_to 'Edit', edit_schema_path(@schema) %> |
+  <%= link_to 'Back', schemas_path %>
+</div>

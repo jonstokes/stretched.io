@@ -1,0 +1,42 @@
+<p id="notice"><%= notice %></p>
+
+<div class="col-xs-9">
+  <h2>Attributes</h2>
+  <dl class="dl-horizontal">
+    <dt>id</dt>
+    <dd><%= @adapter.id %></dd>
+    <dt>name</dt>
+    <dd><%= @adapter.name %></dd>
+    <dt>xpath</dt>
+    <dd><code><%= @adapter.xpath %></code></dd>
+    <dt>id_property</dt>
+    <dd><code><%= @adapter.id_property %></code></dd>
+    <dt>schema</dt>
+    <dd><%= link_to @adapter.schema.name, @adapter.schema %></dd>
+    <dt>template</dt>
+    <dd><%= @adapter.template.try(:name) %></dd>
+    <dt>scripts</dt>
+    <dd>
+      <% @adapter.scripts.each do |script| %>
+      <%= link_to script.name, script %><br/>
+      <% end %>
+    </dd>
+  </dl>
+
+  <h3>Property Setters</h3>
+  <pre class="pre-scrollable">
+    <%= @adapter.property_setters.to_yaml %>
+  </pre>
+
+  <%= link_to 'Edit', edit_adapter_path(@adapter) %> |
+  <%= link_to 'Back', adapters_path %>
+  <hr>
+  <div class="col-xs-5">
+    <h2>Associations</h2>
+    <dl class="dl-horizontal">
+      <dt>documents</dt>
+      <dd><%= @adapter.documents.count %></dd>
+    </dl>
+  </div>
+</div>
+

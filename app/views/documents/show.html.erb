@@ -1,0 +1,21 @@
+<p id="notice"><%= notice %></p>
+
+<div class="col-xs-9">
+  <h2>Attributes</h2>
+  <dl class="dl-horizontal">
+    <dt>id</dt>
+    <dd><%= @document.id %></dd>
+    <dt>page</dt>
+    <dd><%= link_to @document.page.url, @document.page %></dd>
+    <dt>adapter</dt>
+    <dd><%= link_to @document.adapter.name, @document.adapter %></dd>
+  </dl>
+  <h3>Properties</h3>
+  <dl class="dl-horizontal">
+    <% @document.properties.each do |k, v| %>
+    <dt><%= k %></dt>
+    <dd><%= v %></dd>
+    <% end %>
+  </dl>
+  <%= link_to 'Back', documents_path %>
+</div>

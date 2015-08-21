@@ -43,7 +43,7 @@ class Session
     @median_scrape   = scrape_times.median
     @mean_parse      = parse_times.mean
     @median_parse    = parse_times.median
-    @eff_rate        = pages_scraped.to_f / (duration * 1000).to_f
+    @eff_rate        = pages_scraped.to_f / (duration * 1000).to_f if pages_scraped && duration
   end
 
   def to_hash
