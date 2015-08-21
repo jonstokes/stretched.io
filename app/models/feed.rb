@@ -2,11 +2,12 @@ class Feed
   include Elasticsearch::Persistence::Model
   include Activisms
   include Redis::Objects
+  include NameAsUUID
 
-  sorted_set :page_queue, :global => true
+  sorted_set      :page_queue
 
-  belongs_to      :domain
-  has_many        :pages
+  belongs_to      :domain, by: :name
+  has_many        :pages,  dependent: :destroy
   belongs_to_many :adapters
 
   attribute  :page_format,   String,  mapping: { index: 'not_analyzed' }
@@ -22,15 +23,14 @@ class Feed
   attribute  :read_interval, Integer, mapping: { type:  'integer' }
   attribute  :sessions,      Array,   mapping: { type:  'object' }, default: []
 
-  validates :domain_id,     presence: true, length: {minimum: 3}
+  validates :domain_name,   presence: true, length: {minimum: 3}
   validates :adapter_names, presence: true
   validates :page_format,   presence: true, inclusion: { in: ['html', :html, 'xml', :xml, 'dhtml', :dhtml] }
   validates :urls,          presence: true
   validates :read_interval, presence: true, numericality: { greater_than_or_equal_to: 60, only_integer: true }
 
-  after_destroy do
+  before_destroy do
     clear_redis
-    unlink_pages
   end
 
   delegate :with_limit, to: :domain
@@ -78,7 +78,11 @@ class Feed
   end
 
   def has_stale_pages?
-    Page.count(stale_pages_query) > 0
+    stale_page_count > 0
+  end
+
+  def stale_page_count
+    Page.count(stale_pages_query)
   end
 
   def clear_redis
@@ -132,13 +136,6 @@ class Feed
       },
       sort: { fetched_at: { order: 'asc'} }
     }
-  end
-
-  def unlink_pages
-    # FIXME: Batch delete
-    each_page do |page|
-      page.destroy
-    end
   end
 
   def expand_urls

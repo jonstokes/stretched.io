@@ -1,7 +1,7 @@
 ---
-- id: www.arstechnica.com
+- name: www.arstechnica.com
   max_readers: 2
-  rate_limit_id: global/slow
-- id: www.wired.com
+  rate_limit_name: global/slow
+- name: www.wired.com
   max_readers: 1
-  rate_limit_id: global/fast
+  rate_limit_name: global/fast

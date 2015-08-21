@@ -44,6 +44,9 @@ GEM
       builder
       multi_json
     arel (6.0.3)
+    autoprefixer-rails (5.2.1.2)
+      execjs
+      json
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
@@ -60,6 +63,11 @@ GEM
       rack (>= 0.9.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bootstrap-sass (3.3.5.1)
+      autoprefixer-rails (>= 5.0.0.1)
+      sass (>= 3.3.0)
+    bootswatch-rails (3.3.5)
+      railties (>= 3.1)
     builder (3.2.2)
     buzzsaw (0.0.2)
       activesupport (~> 4.2)
@@ -308,6 +316,8 @@ DEPENDENCIES
   bellbro (~> 0.3.1)
   better_errors
   binding_of_caller
+  bootstrap-sass (~> 3.3.5)
+  bootswatch-rails
   buzzsaw (~> 0.0.2)
   byebug
   coffee-rails (~> 4.1.0)

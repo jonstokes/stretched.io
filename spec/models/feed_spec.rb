@@ -8,18 +8,23 @@ RSpec.describe Feed, type: :model do
 
     it { is_expected.to be_valid }
 
+    it "requires name" do
+      subject.page_format = nil
+      expect(subject).not_to be_valid
+    end
+
     it "requires page_format" do
       subject.page_format = nil
       expect(subject).not_to be_valid
     end
 
-    it "requires adapter_ids" do
+    it "requires adapter_names" do
       subject.adapter_names = nil
       expect(subject).not_to be_valid
     end
 
-    it "requires domain_id" do
-      subject.domain_id = nil
+    it "requires domain_name" do
+      subject.domain_name = nil
       expect(subject).not_to be_valid
     end
 
@@ -44,23 +49,27 @@ RSpec.describe Feed, type: :model do
     end
   end
 
-  context "hooks" do
-    let(:feed) { build(:feed) }
+  context "when the feed is destroyed" do
+    let(:feed) { create(:feed) }
 
     before do
-      feed.expanded_urls[0..2].each do |url|
-        create(:page, url: url, feed_id: feed.id)
-      end
+      feed.link_pages
+      refresh_index
     end
 
-    describe "#after_destroy" do
-      it "destroyes each linked page" do
-        feed.save
-        refresh_index
-        feed.destroy
-        refresh_index
-        expect(Page.count).to be_zero
-      end
+    it "destroys each linked page" do
+      feed = Feed.all.first
+      expect(feed.pages.count).not_to be_zero
+      feed.destroy
+      refresh_index
+      expect(feed.pages.count).to be_zero
+    end
+
+    it "clears the page_queue for that feed" do
+      feed.send(:queue_stale_pages)
+      expect(feed.page_queue.size).not_to be_zero
+      feed.destroy
+      expect(feed.page_queue.size).to be_zero
     end
   end
 

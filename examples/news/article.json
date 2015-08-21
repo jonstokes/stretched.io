@@ -3,6 +3,7 @@
   "type": "object",
   "$schema": "http://json-schema.org/draft-04/schema",
   "properties": {
+    "id": { "type": "string" },
     "url": {
       "type": "string",
       "format": "uri"
@@ -11,11 +12,13 @@
     "author": { "type": "string" },
     "leader": { "type": "string" },
     "category": {
+      "type": "string",
       "enum": ["tech", "business", "legal", "apple"]
-    ,
+    },
     "timestamp": {
       "type": "string",
       "format": "date-time"
     }
   }
 }
+

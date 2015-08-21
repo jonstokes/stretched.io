@@ -5,7 +5,7 @@ FactoryGirl.define do
       schema { create(:schema) }
       scripts { [create(:script)] }
     end
-    schema_id         { schema.id }
+    schema_name       { schema.name }
     name              { "#{domain.id}/product" }
     xpath             "//html"
     script_names        { scripts.map(&:name) }

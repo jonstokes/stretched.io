@@ -22,8 +22,9 @@ class Page
   validates :feed_id, presence: true
   validates :url,     presence: true, format: URI.regexp
 
-  def id
-    @_id = Page.url_to_id(url)
+  def url=(val)
+    self.id = self.class.url_to_id(val)
+    super
   end
 
   def self.find_by_url(url)
@@ -31,10 +32,17 @@ class Page
   end
 
   def self.url_exists?(url)
-    exists?(Page.url_to_id(url))
+    exists?(url_to_id(url))
   end
 
   def self.url_to_id(url)
+    return unless url
+    UUIDTools::UUID.parse_string(
+      schemeless_url(url)
+    ).to_s
+  end
+
+  def self.schemeless_url(url)
     return unless url
     url.split(/https?/).last
   end

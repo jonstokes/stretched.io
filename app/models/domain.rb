@@ -2,17 +2,16 @@ class Domain
   include Elasticsearch::Persistence::Model
   include Activisms
   include Redis::Objects
+  include NameAsUUID
 
   set :readers
 
-  belongs_to :rate_limit
+  belongs_to :rate_limit, by: :name
   has_many   :feeds
 
-  attribute :max_readers, Integer, mapping: { type:  'integer' }, default: 1
-
-  validates :id,            presence: true
-  validates :max_readers,   presence: true
-  validates :rate_limit_id, presence: true
+  attribute :max_readers,     Integer, mapping: { type:  'integer' }, default: 1
+  validates :max_readers,     presence: true
+  validates :rate_limit_name, presence: true
 
   def read_with(jid)
     readers << jid

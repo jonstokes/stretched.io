@@ -5,7 +5,8 @@ FactoryGirl.define do
       adapters  { [create(:adapter, domain: domain)] }
     end
 
-    domain_id     { domain.id }
+    sequence(:name) { |n| "#{domain.name}/#{n}" }
+    domain_name     { domain.name }
     adapter_names   { adapters.map(&:name) }
     page_format   :html
     urls          {

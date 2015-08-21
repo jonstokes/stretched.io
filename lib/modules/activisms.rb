@@ -13,8 +13,8 @@ module Activisms
 
   module ClassMethods
     def belongs_to(attr, opts={})
-      attr = attr.to_s
-      klass = opts[:class_name].try(:constantize) || attr.classify.constantize
+      attr     = attr.to_s
+      klass    = opts[:class_name].try(:constantize) || attr.classify.constantize
       id_field = "#{attr}_id"
 
       attribute id_field.to_sym, String, mapping: { index: 'not_analyzed' }
@@ -22,6 +22,16 @@ module Activisms
       define_method attr do
         next unless attr_id = self.send(id_field)
         instance_variable_get("@#{attr}") || instance_variable_set("@#{attr}", klass.find(attr_id))
+      end
+
+      return unless opts[:by] == :name
+
+      attribute "#{attr}_name".to_sym, String, mapping: { index: 'not_analyzed' }
+
+      define_method "#{attr}_name=" do |str|
+        val = str.present? ? UUIDTools::UUID.parse_string(str).to_s : nil
+        self.send("#{id_field}=", val)
+        super(str)
       end
     end
 
@@ -54,6 +64,15 @@ module Activisms
           block.call(obj)
         end
       end
+
+      define_method "destroy_#{attr}" do
+        # FIXME: Batch delete
+        self.send("each_#{attr.singularize}") do |obj|
+          obj.destroy
+        end
+      end
+
+      after_destroy("destroy_#{attr}".to_sym) if opts[:dependent] == :destroy
     end
 
     def find_by(opts)

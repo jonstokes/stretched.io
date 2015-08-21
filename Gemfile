@@ -22,6 +22,8 @@ gem "elasticsearch-persistence", require: 'elasticsearch/persistence/model'
 gem 'figaro'
 gem 'descriptive_statistics', '~> 2.4.0', :require => 'descriptive_statistics/safe'
 gem 'uuidtools'
+gem 'bootswatch-rails'
+gem 'bootstrap-sass', '~> 3.3.5'
 
 gem 'sunbro', '~> 0.1.3'
 gem 'bellbro', '~> 0.3.1'

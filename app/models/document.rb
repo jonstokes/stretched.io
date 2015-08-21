@@ -7,10 +7,19 @@ class Document
 
   attribute :properties, Hash, mapping: { type: 'object' }
 
+  validates :id,         presence: true
   validates :page_id,    presence: true
   validates :adapter_id, presence: true
   validates :properties, presence: true
   validate  :properties, :validate_with_schema
+
+  def initialize(opts={})
+    opts[:properties] ||= opts['properties']
+    if id_source = (opts[:properties].try(:[],'id') || opts[:properties].try(:[],'id'))
+      opts[:id] = UUIDTools::UUID.parse_string(id_source).to_s
+    end
+    super
+  end
 
   def schema
     adapter.try(:schema).try(:data)

@@ -17,6 +17,8 @@ module NameAsUUID
     def find_by_name(name)
       return unless name.present?
       self.find(UUIDTools::UUID.parse_string(name).to_s)
+    rescue Elasticsearch::Persistence::Repository::DocumentNotFound
+      raise "#{self.name} #{name} does not exist!"
     end
   end
 end

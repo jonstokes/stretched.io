@@ -1,18 +1,23 @@
 namespace :examples do
   namespace :news do
     task load: :environment do
+      Index.delete rescue nil
+      sleep 1
+      Index.create
+      Index.refresh
+
       puts "Loading news registrations into #{INDEX_NAME}..."
 
       File.open(Rails.root.join('examples', 'news', 'article.json')) do |f|
-        Schema.create(id: 'Article', data: JSON.parse(f.read))
+        Schema.create(name: 'Article', data: JSON.parse(f.read))
       end
 
-      File.open(Rails.root.join('examples', 'news', 'normalize_timestamp.rb')) do |f|
-        Script.create(id: 'global/normalize_timestamp', source: f.read)
+      File.open(Rails.root.join('examples', 'news', 'normalize_properties.rb')) do |f|
+        Script.create(name: 'global/normalize_properties', source: f.read)
       end
 
       File.open(Rails.root.join('examples', 'news', 'normalizations.rb')) do |f|
-        Extension.create(id: 'global/normalizations', source: f.read)
+        Extension.create(name: 'global/normalizations', source: f.read)
       end
 
       YAML.load_file(Rails.root.join('examples', 'news', 'rate_limits.yaml')).each do |attrs|
@@ -30,6 +35,12 @@ namespace :examples do
       YAML.load_file(Rails.root.join('examples', 'news', 'feeds.yaml')).each do |attrs|
         feed = Feed.create(attrs)
         feed.link_pages
+      end
+    end
+
+    task run_feeds: :environment do
+      Feed.each_stale do |feed|
+        RunFeedWorker.new.perform(feed_id: feed.id)
       end
     end
   end

@@ -1,9 +1,10 @@
-- id: www.arstechnica.com/news_feed
-  schema_id: Article
+- name: www.arstechnica.com/news_feed
+  schema_name: Article
   xpath: //section[@id='stories-main']/ol/li[@class='post']/article[@class='report in-column']
-  scripts:
-  - global/normalize_timestamp
-  property_setters: &properties
+  id_property: id
+  script_names:
+  - global/normalize_properties
+  property_setters: &setters
     id:
     - find_by_xpath:
         xpath: .//a/@href
@@ -39,18 +40,30 @@
     timestamp:
     - find_by_xpath:
         xpath: .//p[@class='byline']/span[@class='date']
-        pattern: !ruby/regexp '/pattern/i'
-- id: www.arstechnica.com/on_the_radar
-  schema_id: Article
+- name: www.arstechnica.com/on_the_radar
+  schema_name: Article
+  xpath: //section[@id='content']//ol/li//article
+  script_names:
+  - global/normalize_properties
+  id_property: id
+  property_setters: *setters
+- name: www.arstechnica.com/landing_page
+  schema_name: Article
   xpath: //section[@id='radar']/ol[@id='stories-brief']/li[@class='post']/article[@class='in-column']
-  scripts:
-  - global/normalize_timestamp
-  property_setters: *properties
-- id: www.wired.com/rss
-  schema_id: Article
-  scripts:
-  - global/normalize_timestamp
+  script_names:
+  - global/normalize_properties
+  id_property: id
+  property_setters:
+    <<: *setters
+    title:
+    - find_by_xpath:
+        xpath: .//h1[@class='heading']
+- name: www.wired.com/rss
+  schema_name: Article
+  script_names:
+  - global/normalize_properties
   xpath: //item
+  id_property: id
   property_setters:
     id:
     - find_by_xpath:
