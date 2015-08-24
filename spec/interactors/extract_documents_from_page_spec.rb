@@ -59,7 +59,7 @@ describe ExtractDocumentsFromPage do
     it "translates a page into JSON using a JSON adapter" do
       result = ExtractDocumentsFromPage.call(
         page: page,
-        feed: feed
+        adapters: [adapter]
       )
 
       expect(result.documents.size).to eq(1)
@@ -84,7 +84,7 @@ describe ExtractDocumentsFromPage do
 
       result = ExtractDocumentsFromPage.call(
         page: page,
-        feed: feed
+        adapters: [adapter]
       )
       expect(result.documents.size).to eq(1)
       expect(result.documents.first.properties).to eq({})
@@ -105,7 +105,7 @@ describe ExtractDocumentsFromPage do
       expect {
         ExtractDocumentsFromPage.call(
           page: page,
-          feed: adapter
+          adapters: [adapter]
         )
       }.to raise_error(RuntimeError, "Property listing_type is not defined in schema Listing")
     end
@@ -115,7 +115,7 @@ describe ExtractDocumentsFromPage do
       expect {
         ExtractDocumentsFromPage.call(
           page: page,
-          feed: adapter
+          adapters: [adapter]
         )
       }.to raise_error(RuntimeError, "Property listing_type is not defined in schema Listing")
     end

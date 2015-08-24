@@ -1,0 +1,25 @@
+<div id="page">
+  <h4>Page</h4>
+  <dl class="dl-horizontal">
+    <dt>code</dt>
+    <dd><%= scrape.page.code %></dd>
+    <dt>headers</dt>
+    <dd><%= scrape.page.headers %></dd>
+    <dt>error</dt>
+    <dd><%= scrape.page.error %></dd>
+    <dt>response time</dt>
+    <dd><%= scrape.page.response_time %></dd>
+  </dl>
+</div>
+
+<div id="documents">
+  <h4>Documents</h4>
+  <% scrape.results.documents.each do |document| %>
+    <dl class="dl-horizontal">
+      <% document.properties.each do |k, v| %>
+        <dt><%= k %></dt>
+        <dd><%= v %></dd>
+      <% end %>
+    </dl>
+  <% end %>
+</div>

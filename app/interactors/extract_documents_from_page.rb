@@ -3,14 +3,14 @@ class ExtractDocumentsFromPage
   include Bellbro::Ringable
   include Chronograph
 
-  expects  :page, :feed
+  expects  :page, :adapters
 
   permits  :browser_session
 
   benchmark_with :parse_times
 
   provides(:documents) do
-    feed.adapters.map do |adapter|
+    adapters.map do |adapter|
       page.doc.xpath(adapter.xpath).map do |node|
         benchmark(adapter.id) do
           extract_document_from_node(node: node, adapter: adapter)

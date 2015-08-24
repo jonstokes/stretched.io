@@ -26,7 +26,7 @@ class RunSession
       if source.valid?
         result = ExtractDocumentsFromPage.call(
           page: page,
-          feed: feed,
+          adapters: feed.adapters,
           browser_session: browser_session
         )
 

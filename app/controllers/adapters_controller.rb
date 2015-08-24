@@ -1,5 +1,5 @@
 class AdaptersController < ApplicationController
-  before_action :set_adapter, only: [:show, :edit, :update, :destroy]
+  before_action :set_adapter, only: [:show, :update, :destroy]
 
   # GET /adapters
   # GET /adapters.json
@@ -14,17 +14,26 @@ class AdaptersController < ApplicationController
 
   # GET /adapters/new
   def new
-    @adapter = Adapter.new
+    @adapter = AdapterBuilder.new
+    @scrape = Scrape.new
   end
 
   # GET /adapters/1/edit
   def edit
+    @adapter = AdapterBuilder.new(params)
+    @scrape = Scrape.new(
+      xpath: @adapter.xpath,
+      property_setters: @adapter.property_setters,
+      mapping: @adapter.mapping,
+      schema_name: @adapter.schema_name,
+      script_names: @adapter.script_names
+    )
   end
 
   # POST /adapters
   # POST /adapters.json
   def create
-    @adapter = Adapter.new(adapter_params)
+    @adapter = AdapterBuilder.new(adapter_params)
 
     respond_to do |format|
       if @adapter.save

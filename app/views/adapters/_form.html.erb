@@ -1,42 +1,68 @@
-<%= form_for(@adapter) do |f| %>
-  <% if @adapter.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@adapter.errors.count, "error") %> prohibited this adapter from being saved:</h2>
+<div class="col-xs-10">
+  <%= form_for(@adapter) do |f| %>
+    <% if @adapter.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@adapter.errors.count, "error") %> prohibited this adapter from being saved:</h2>
 
-      <ul>
-      <% @adapter.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
+        <ul>
+        <% @adapter.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :name %>
+      <%= f.text_field :name, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :schema_name %>
+      <%= f.text_field :schema_name, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :mapping %>
+      <%= f.text_field :mapping, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :script_names %>
+      <%= f.text_field :script_names, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :xpath %>
+      <%= f.text_field :xpath, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :property_setters %>
+      <%= f.text_area :property_setters, class: 'form-control', rows: 30 %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit class: "btn btn-default" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="col-xs-10">
+  <hr>
+  <%= form_for(@scrape, remote: true, html: { class: "form-inline" }) do |f| %>
+    <%= f.hidden_field :xpath %>
+    <%= f.hidden_field :mapping %>
+    <%= f.hidden_field :schema_name %>
+    <%= f.hidden_field :property_setters %>
+    <%= f.hidden_field :script_names %>
+
+    <div class="form-group">
+      <%= f.text_field :url, class: 'form-control', placeholder: 'http://example.com/' %>
+      <%= f.submit "Test Adapter", class: "btn btn-default" %>
     </div>
   <% end %>
 
-  <div class="form-group">
-    <%= f.label :id %>
-    <%= f.text_field :id, class: 'form-control' %>
+  <div id="scrape-results">
   </div>
-
-  <div class="form-group">
-    <%= f.label :schema_id %>
-    <%= f.select :schema_id, options_from_collection_for_select(Schema.all, :id) class: 'form-control' %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :script_ids %>
-    <%= f.text_field :script_ids, class: 'form-control' %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :xpath %>
-    <%= f.text_field :xpath, class: 'form-control' %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :property_setters %>
-    <%= f.text_area :id, class: 'form-control' %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit %>
-  </div>
-<% end %>
+</div>

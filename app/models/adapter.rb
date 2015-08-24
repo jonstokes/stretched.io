@@ -33,7 +33,7 @@ class Adapter
 
   belongs_to      :schema,   by: :name
   belongs_to      :template, by: :name, class_name: "Adapter"
-  belongs_to_many :scripts
+  belongs_to_many :scripts,  by: :name
   has_many        :documents
 
   attribute :property_setters, String, mapping: { index: 'not_analyzed' }

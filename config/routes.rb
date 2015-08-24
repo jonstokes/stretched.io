@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   resources :feeds,       format: false
   resources :schemas,     format: false
 
-  resources :pages,        format: false, only: [:show, :index]
+  resources :pages,       format: false, only: [:show, :index]
   resources :documents,   format: false, only: [:show, :index]
+
+  post  "scrapes"  => "scrapes#build"
 end

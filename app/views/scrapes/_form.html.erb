@@ -1,0 +1,17 @@
+<%= form_for(@scrape) do |f| %>
+  <% if @scrape.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@scrape.errors.count, "error") %> prohibited this scrape from being saved:</h2>
+
+      <ul>
+      <% @scrape.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
