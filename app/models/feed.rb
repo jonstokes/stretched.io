@@ -4,11 +4,9 @@ class Feed
   include Redis::Objects
   include NameAsUUID
 
-  sorted_set      :page_queue
-
-  belongs_to      :domain, by: :name
-  has_many        :pages,  dependent: :destroy
-  belongs_to_many :adapters
+  belongs_to      :domain,   by: :name
+  has_many        :pages,    dependent: :destroy
+  belongs_to_many :adapters, by: :name
 
   attribute  :page_format,   String,  mapping: { index: 'not_analyzed' }
   attribute  :urls,          Array,   mapping: {
@@ -29,11 +27,7 @@ class Feed
   validates :urls,          presence: true
   validates :read_interval, presence: true, numericality: { greater_than_or_equal_to: 60, only_integer: true }
 
-  before_destroy do
-    clear_redis
-  end
-
-  delegate :with_limit, to: :domain
+  delegate :with_limit, :page_queue, to: :domain
 
   def pop_page
     return unless url = page_queue.pop
@@ -85,21 +79,17 @@ class Feed
     Page.count(stale_pages_query)
   end
 
-  def clear_redis
-    page_queue.clear
-  end
-
   def link_pages
     # FIXME: only accept urls that are part of this feed's domain.
     # Batch write
     expanded_urls.each do |url|
       next if Page.url_exists?(url)
-      Page.create(feed_id: id, url: url)
+      Page.create(
+        feed_id:   id,
+        domain_id: domain.id,
+        url:       url
+      )
     end
-  end
-
-  def self.clear_redis
-    self.all.to_a.each(&:clear_redis)
   end
 
   def self.each_stale

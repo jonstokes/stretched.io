@@ -11,15 +11,27 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :Schema %><br>
-    <%= f.text_field :Schema %>
+  <div class="form-group">
+    <%= f.label :name %>
+    <%= f.text_field :name, class: 'form-control' %>
   </div>
-  <div class="field">
-    <%= f.label :Adapter %><br>
-    <%= f.text_field :Adapter %>
+  <div class="form-group">
+    <%= f.label :domain_name %><br>
+    <%= f.select :domain_name, options_from_collection_for_select(Domain.all, 'id', 'name'), {}, { class: 'form-control' } %>
+  </div>
+  <div class="form-group">
+    <%= f.label :page_format %>
+    <%= f.select :page_format, ['html', 'xml', 'dhtml'], {}, {class: 'form-control'} %>
+  </div>
+  <div class="form-group">
+    <%= f.label :read_interval %>
+    <%= f.text_field :read_interval, class: 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :urls %>
+    <%= f.text_area :urls, class: 'form-control' %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit class: "btn btn-default" %>
   </div>
 <% end %>

@@ -84,7 +84,6 @@ describe RunSession do
   let(:timer)  { Bellbro::Timer.new }
 
   before :each do
-    feed.clear_redis
     refresh_index
     pages.each do |page|
       stub_request(:get, page.url).

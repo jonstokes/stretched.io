@@ -19,17 +19,21 @@
 
     <div class="form-group">
       <%= f.label :schema_name %>
-      <%= f.text_field :schema_name, class: 'form-control' %>
+      <%= f.select :schema_name, options_from_collection_for_select(Schema.all, 'name', 'name'), {}, { class: 'form-control' } %>
     </div>
 
     <div class="form-group">
       <%= f.label :mapping %>
-      <%= f.text_field :mapping, class: 'form-control' %>
+      <%= f.select :mapping, options_from_collection_for_select(Mapping.all, 'id', 'id'), {}, { class: 'form-control' } %>
     </div>
 
     <div class="form-group">
-      <%= f.label :script_names %>
-      <%= f.text_field :script_names, class: 'form-control' %>
+      <%= f.label :script_names %><span id="add_script_row"></i>
+      <% (0..2).to_a.each do |i| %>
+        <div id="script_name_<%= i %>">
+          <%= f.select "script_name_#{i}", options_from_collection_for_select(Script.all, 'name', 'name', @adapter.script_names[i]), {include_blank: true}, { class: 'form-control' } %>
+        </div>
+      <% end %>
     </div>
 
     <div class="form-group">

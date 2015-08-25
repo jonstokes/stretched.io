@@ -7,6 +7,17 @@ class AdapterBuilder
   delegate  :id, :name, :id_property, :schema_name, :xpath, :mapping, :script_names, :template_name, to: :adapter
   delegate  :to_partial_path, :to_key, :to_model, :to_param, :persisted?, to: :adapter
 
+
+  (0..15).to_a.each do |i|
+    define_method "script_name_#{i}" do
+      script_names[i]
+    end
+
+    define_method "script_name_#{i}=" do |arg|
+      script_names[i] = arg if arg.present?
+    end
+  end
+
   def initialize(attrs={})
     @adapter = find_adapter(attrs[:id]) || Adapter.new
     @attributes = attrs

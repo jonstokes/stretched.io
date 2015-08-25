@@ -22,6 +22,8 @@ class Page
   validates :feed_id, presence: true
   validates :url,     presence: true, format: URI.regexp
 
+  before_destroy { feed.page_queue.delete(url); true }
+
   def url=(val)
     self.id = self.class.url_to_id(val)
     super

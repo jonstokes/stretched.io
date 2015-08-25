@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Page, type: :model do
+
+  before(:each) { refresh_index }
+
   context "validations" do
     subject { create(:page) }
 
@@ -22,11 +25,24 @@ RSpec.describe Page, type: :model do
     end
   end
 
-  context "attributes" do
+  context "attributes and hooks" do
     subject { create(:page) }
 
     it "has attributes of the correct types" do
       expect(subject.fetched_at).to be_a(Time)
+    end
+  end
+
+  describe "#before_destroy" do
+    subject { create(:page, fetched_at: nil) }
+
+    it "deletes its url from the domain's page_queue" do
+      feed = Feed.find(subject.feed_id)
+      refresh_index
+      feed.send(:queue_stale_pages)
+      expect(feed.page_queue.size).not_to be_zero
+      subject.destroy
+      expect(feed.page_queue.size).to be_zero
     end
   end
 

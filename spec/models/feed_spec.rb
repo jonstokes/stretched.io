@@ -64,13 +64,6 @@ RSpec.describe Feed, type: :model do
       refresh_index
       expect(feed.pages.count).to be_zero
     end
-
-    it "clears the page_queue for that feed" do
-      feed.send(:queue_stale_pages)
-      expect(feed.page_queue.size).not_to be_zero
-      feed.destroy
-      expect(feed.page_queue.size).to be_zero
-    end
   end
 
   describe "#stop" do

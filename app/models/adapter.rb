@@ -45,7 +45,7 @@ class Adapter
   validates :mapping,            presence: true
   validates :property_setters,   presence: true
   validates :xpath,              presence: true
-
+  
   def runners
     @runners ||= script_names.map do |script_name|
       Script.runner(script_name) || raise("Adapter: Script #{script_name} not found!")

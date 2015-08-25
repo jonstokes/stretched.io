@@ -10,7 +10,7 @@ FactoryGirl.define do
     adapter_names   { adapters.map(&:name) }
     page_format   :html
     urls          {
-      5.times.map { |n| { url: "http://#{domain.id}/#{n}" } }
+      5.times.map { |n| { url: "http://#{domain.name}/#{n}" } }
     }
     read_interval { 3600 }
 

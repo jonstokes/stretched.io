@@ -4,14 +4,19 @@ class Domain
   include Redis::Objects
   include NameAsUUID
 
-  set :readers
+  set        :readers
+  sorted_set :page_queue
 
-  belongs_to :rate_limit, by: :name
-  has_many   :feeds
+  belongs_to :rate_limit,     by: :name
+  has_many   :feeds,          dependent: :destroy
 
   attribute :max_readers,     Integer, mapping: { type:  'integer' }, default: 1
   validates :max_readers,     presence: true
   validates :rate_limit_name, presence: true
+
+  before_destroy do
+    clear_redis
+  end
 
   def read_with(jid)
     readers << jid
@@ -33,6 +38,7 @@ class Domain
 
   def clear_redis
     readers.clear
+    page_queue.clear
   end
 
   def self.clear_redis

@@ -13,7 +13,7 @@
     "leader": { "type": "string" },
     "category": {
       "type": "string",
-      "enum": ["tech", "business", "legal", "apple"]
+      "enum": ["tech", "business", "legal", "apple", "science", "gaming"]
     },
     "timestamp": {
       "type": "string",

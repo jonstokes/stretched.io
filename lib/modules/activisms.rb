@@ -66,13 +66,13 @@ module Activisms
       end
 
       define_method "destroy_#{attr}" do
-        # FIXME: Batch delete
         self.send("each_#{attr.singularize}") do |obj|
           obj.destroy
         end
+        true
       end
 
-      after_destroy("destroy_#{attr}".to_sym) if opts[:dependent] == :destroy
+      before_destroy("destroy_#{attr}".to_sym) if opts[:dependent] == :destroy
     end
 
     def find_by(opts)
