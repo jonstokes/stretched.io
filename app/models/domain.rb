@@ -5,7 +5,6 @@ class Domain
   include NameAsUUID
 
   set        :readers
-  sorted_set :page_queue
 
   belongs_to :rate_limit,     by: :name
   has_many   :feeds,          dependent: :destroy
@@ -38,7 +37,6 @@ class Domain
 
   def clear_redis
     readers.clear
-    page_queue.clear
   end
 
   def self.clear_redis

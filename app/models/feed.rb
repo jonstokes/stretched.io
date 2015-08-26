@@ -4,6 +4,10 @@ class Feed
   include Redis::Objects
   include NameAsUUID
 
+  sorted_set :page_queue
+
+  before_destroy { clear_redis }
+
   belongs_to      :domain,   by: :name
   has_many        :pages,    dependent: :destroy
   belongs_to_many :adapters, by: :name
@@ -27,7 +31,7 @@ class Feed
   validates :urls,          presence: true
   validates :read_interval, presence: true, numericality: { greater_than_or_equal_to: 60, only_integer: true }
 
-  delegate :with_limit, :page_queue, to: :domain
+  delegate :with_limit, to: :domain
 
   def pop_page
     return unless url = page_queue.pop
@@ -97,6 +101,14 @@ class Feed
       next unless feed.has_stale_pages?
       yield feed
     end
+  end
+
+  def clear_redis
+    page_queue.clear
+  end
+
+  def self.clear_redis
+    self.all.to_a.each(&:clear_redis)
   end
 
   private
