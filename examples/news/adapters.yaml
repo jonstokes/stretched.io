@@ -41,6 +41,7 @@
     timestamp:
     - find_by_xpath:
         xpath: .//p[@class='byline']/span[@class='date']
+
 - name: www.arstechnica.com/on_the_radar
   schema_name: Article
   mapping: article
@@ -53,6 +54,7 @@
     title:
     - find_by_xpath:
         xpath: .//h1[@class='heading']
+
 - name: www.arstechnica.com/landing_page
   schema_name: Article
   mapping: article
@@ -65,6 +67,7 @@
     title:
     - find_by_xpath:
         xpath: .//h1[@class='heading']
+
 - name: www.wired.com/rss
   schema_name: Article
   mapping: article

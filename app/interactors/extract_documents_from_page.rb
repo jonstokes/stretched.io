@@ -12,7 +12,7 @@ class ExtractDocumentsFromPage
   provides(:documents) do
     adapters.map do |adapter|
       page.doc.xpath(adapter.xpath).map do |node|
-        benchmark(adapter.id) do
+        benchmark(adapter.name) do
           extract_document_from_node(node: node, adapter: adapter)
         end
       end

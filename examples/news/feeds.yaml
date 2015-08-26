@@ -8,6 +8,7 @@
   read_interval: 3600 #seconds
   urls:
   - url: http://arstechnica.com/
+
 - name: www.arstechnica.com/sections
   domain_name: www.arstechnica.com
   adapter_names:
@@ -21,6 +22,8 @@
   - url: http://arstechnica.com/business/page/PAGENUM/
     start_at_page: 1
     stop_at_page: 10
+    step: 1
+
 - name: www.wired.com/news
   domain_name: www.wired.com
   adapter_names:
