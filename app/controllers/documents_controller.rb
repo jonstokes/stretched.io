@@ -4,7 +4,10 @@ class DocumentsController < ApplicationController
   # GET /documents
   # GET /documents.json
   def index
-    @documents = Document.all
+    query = {}
+    query.merge!(term: { page_id: params[:page_id] }) if params[:page_id]
+    query.merge!(term: { adapter_id: params[:adapter_id] }) if params[:adapter_id]
+    @documents = Document.all(query)
   end
 
   # GET /documents/1

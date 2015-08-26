@@ -65,10 +65,10 @@ class Document
     response['hits']['total']
   end
 
-  def self.all
+  def self.all(opts={})
     response = Index.client.search(
       index: Index.name,
-      body:  query_body
+      body:  query_body(opts)
     )
     return [] unless response['hits'].try(:[], 'hits')
     response['hits']['hits'].map { |r| new_from_response(r) }
@@ -113,18 +113,24 @@ class Document
 
   private
 
-  def self.query_body
+  def self.query_body(opts={})
+    and_clauses = all_but_mapped_classes
+    and_clauses << opts if opts.present?
     {
       query: {
         filtered: {
           filter: {
-            and: Index::MAPPED_CLASSES.map { |klass| { not: { type: {value: klass} } } }
+            and: and_clauses
           }
         }
       },
       sort: { created_at: { order: 'asc'} },
       size: 100
     }
+  end
+
+  def self.all_but_mapped_classes
+    Index::MAPPED_CLASSES.map { |klass| { not: { type: {value: klass} } } }
   end
 
   def self.new_from_response(response)
