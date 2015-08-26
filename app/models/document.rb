@@ -103,7 +103,8 @@ class Document
             }
           }
         },
-        sort: { created_at: { order: 'asc'} }
+        sort: { created_at: { order: 'asc'} },
+        size: 500
       }
     )
     response['hits']['hits'].map { |r| new_from_response(r) }
