@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  root to: "domains#index"
+
   resources :domains,     format: false
   resources :rate_limits, format: false
   resources :extensions,  format: false
