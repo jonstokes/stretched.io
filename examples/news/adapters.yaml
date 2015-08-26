@@ -44,15 +44,19 @@
 - name: www.arstechnica.com/on_the_radar
   schema_name: Article
   mapping: article
-  xpath: //section[@id='content']//ol/li//article
+  xpath: //section[@id='radar']/ol[@id='stories-brief']/li[@class='post']/article[@class='in-column']
   script_names:
   - global/normalize_properties
   id_property: id
-  property_setters: *setters
+  property_setters:
+    <<: *setters
+    title:
+    - find_by_xpath:
+        xpath: .//h1[@class='heading']
 - name: www.arstechnica.com/landing_page
   schema_name: Article
   mapping: article
-  xpath: //section[@id='radar']/ol[@id='stories-brief']/li[@class='post']/article[@class='in-column']
+  xpath: //section[@id='content']//ol/li//article
   script_names:
   - global/normalize_properties
   id_property: id
