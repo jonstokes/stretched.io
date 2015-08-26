@@ -40,6 +40,8 @@ class Mapping
     end
   end
 
+  def persisted?; true; end
+
   def self.find(type)
     response = client.indices.get_mapping(
       index: Index.name,

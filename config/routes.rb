@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resources :scripts,     format: false
   resources :feeds,       format: false
   resources :schemas,     format: false
-
+  resources :mappings,    format: false
   resources :pages,       format: false, only: [:show, :index]
   resources :documents,   format: false, only: [:show, :index]
 
