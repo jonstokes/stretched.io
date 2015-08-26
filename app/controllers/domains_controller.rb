@@ -1,19 +1,16 @@
 class DomainsController < ApplicationController
-  before_action :set_domain, only: [:show, :edit, :update, :destroy]
+  before_action :set_domain, only: [:edit, :update, :destroy]
 
   # GET /domains
   # GET /domains.json
   def index
-    @domains = Domain.all
+    @domains = Domain.all.map { |d| DomainPresenter.new d }
   end
 
   # GET /domains/1
   # GET /domains/1.json
   def show
-    # FIXME: This needs a presenter to run customized aggregations for speed
-    @feeds = @domain.feeds
-    @pages = @feeds.map(&:pages).flatten
-    @document_count = @pages.sum { |p| p.documents.count }
+    @domain = DomainPresenter.new Domain.find(params[:id])
   end
 
   # GET /domains/new

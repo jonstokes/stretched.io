@@ -1,15 +1,16 @@
 class FeedsController < ApplicationController
-  before_action :set_feed, only: [:show, :edit, :update, :destroy]
+  before_action :set_feed, only: [:edit, :update, :destroy]
 
   # GET /feeds
   # GET /feeds.json
   def index
-    @feeds = Feed.all
+    @feeds = Feed.all.map { |f| FeedPresenter.new(f) }
   end
 
   # GET /feeds/1
   # GET /feeds/1.json
   def show
+    @feed = FeedPresenter.new Feed.find(params[:id])
   end
 
   # GET /feeds/new

@@ -8,6 +8,8 @@
       <th>Name</th>
       <th>Page Format</th>
       <th>Read Interval</th>
+      <th>Pages</th>
+      <th>Documents</th>
       <th>Stale Pages</th>
       <th colspan="2"></th>
     </tr>
@@ -19,6 +21,8 @@
         <td><%= link_to feed.name, feed %></td>
         <td><%= feed.page_format %></td>
         <td><%= feed.read_interval %></td>
+        <td><%= feed.pages_count %></td>
+        <td><%= feed.documents_count %></td>
         <td><%= feed.stale_page_count %></td>
         <td><%= link_to 'Edit', edit_feed_path(feed) %></td>
         <td><%= link_to 'Destroy', feed, method: :delete, data: { confirm: 'Are you sure?' } %></td>

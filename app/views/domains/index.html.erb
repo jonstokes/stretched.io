@@ -9,6 +9,8 @@
       <th>Max Readers</th>
       <th>Rate Limit</th>
       <th>Feeds</th>
+      <th>Pages</th>
+      <th>Documents</th>
       <th>Last Read</th>
       <th colspan="2"></th>
     </tr>
@@ -21,6 +23,8 @@
         <td><%= domain.max_readers %></td>
         <td><%= link_to domain.rate_limit.name, domain.rate_limit %></td>
         <td><%= domain.feeds.count %></td>
+        <td><%= domain.pages_count %></td>
+        <td><%= domain.documents_count %></td>
         <td><%= domain.created_at %></td>
         <td><%= link_to 'Edit', edit_domain_path(domain) %></td>
         <td><%= link_to 'Destroy', domain, method: :delete, data: { confirm: 'Are you sure?' } %></td>
