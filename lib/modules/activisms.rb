@@ -60,7 +60,7 @@ module Activisms
       end
 
       define_method "each_#{attr.singularize}" do |&block|
-        klass.find_each(query: { match: { id_field => self.id } }) do |obj|
+        klass.find_each(query: { match: { id_field => self.id } }, size: 100) do |obj|
           block.call(obj)
         end
       end
@@ -76,7 +76,7 @@ module Activisms
     end
 
     def find_by(opts)
-      self.search(query: { match: opts }).to_a
+      self.search(query: { match: opts }, size: 100).to_a
     end
   end
 end
